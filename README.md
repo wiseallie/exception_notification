@@ -73,11 +73,11 @@ Rails 2.3 stable and earlier
 
 If you are running Rails 2.3 then see the branch for that: 
  
-<a href="http://github.com/rails/exception_notification/tree/2-3-stable">http://github.com/rails/exception_notification/tree/2-3-stable</a>
+<a href="http://github.com/smartinez87/exception_notification/tree/2-3-stable">http://github.com/smartinez87/exception_notification/tree/2-3-stable</a>
 
 If you are running pre-rack Rails then see this tag: 
 
-<a href="http://github.com/rails/exception_notification/tree/pre-2-3">http://github.com/rails/exception_notification/tree/pre-2-3</a>
+<a href="http://github.com/smartinez87/exception_notification/tree/pre-2-3">http://github.com/smartinez87/exception_notification/tree/pre-2-3</a>
 
 Support and tickets
 ---
