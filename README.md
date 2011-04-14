@@ -12,10 +12,18 @@ application. The plugin is configurable, allowing programmers to specify:
 The email includes information about the current request, session, and
 environment, and also gives a backtrace of the exception.
 
-Usage
+Installation
 ---
 
-As of Rails 3 ExceptionNotifier is used as a rack middleware
+You can use the latest ExceptionNotification gem with Rails 3, by adding
+the following line in your Gemfile
+
+    gem 'exception_notification', :require => 'exception_notifier'
+
+As of Rails 3 ExceptionNotification is used as a rack middleware, so you can
+configure its options on your config.ru file, or in the environment you
+want it to run. In most cases you would want ExceptionNotification to
+run on production. You can make it work by
 
     Whatever::Application.config.middleware.use ExceptionNotifier,
       :email_prefix => "[Whatever] ",
