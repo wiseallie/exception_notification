@@ -18,7 +18,7 @@ Installation
 You can use the latest ExceptionNotification gem with Rails 3, by adding
 the following line in your Gemfile
 
-    gem 'exception_notification', :require => 'exception_notifier'
+    gem 'exception_notification'
 
 As of Rails 3 ExceptionNotification is used as a rack middleware, so you can
 configure its options on your config.ru file, or in the environment you
