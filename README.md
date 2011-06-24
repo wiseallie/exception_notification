@@ -70,6 +70,20 @@ In the above case, @document and @person would be made available to the email
 renderer, allowing your new section(s) to access and display them. See the
 existing sections defined by the plugin for examples of how to write your own.
 
+Manually notify of exception
+---
+
+If your controller action manually handles an error, the notifier will never be
+run. To manually notify of an error you can do something like the following:
+
+    rescue_from Exception, :with => :server_error
+
+    def server_error(exception)
+      # Whatever code that handles the exception
+
+      ExceptionNotifier::Notifier.exception_notification(request.env, exception).deliver
+    end
+
 Notification
 ---
 
