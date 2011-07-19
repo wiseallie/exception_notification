@@ -51,7 +51,7 @@ ExceptionNotifier.sections variable. You can even add new sections that
 describe application-specific data--just add the section's name to the list
 (wherever you'd like), and define the corresponding partial. 
    
-    #Example with two sections new sections added
+    #Example with two new added sections
     Whatever::Application.config.middleware.use ExceptionNotifier,
 	   :email_prefix => "[Whatever] ",
 	   :sender_address => %{"notifier" <notifier@example.com>},
