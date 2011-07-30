@@ -11,7 +11,7 @@ class ExceptionNotifier
       attr_writer :default_exception_recipients
       attr_writer :default_email_prefix
       attr_writer :default_sections
-      
+
       def default_sender_address
         @default_sender_address || %("Exception Notifier" <exception.notifier@default.com>)
       end
@@ -65,25 +65,24 @@ class ExceptionNotifier
     end
 
     private
-      
-      def clean_backtrace(exception)
-        Rails.respond_to?(:backtrace_cleaner) ?
-          Rails.backtrace_cleaner.send(:filter, exception.backtrace) :
-          exception.backtrace
+
+    def clean_backtrace(exception)
+      Rails.respond_to?(:backtrace_cleaner) ?
+        Rails.backtrace_cleaner.send(:filter, exception.backtrace) :
+        exception.backtrace
+    end
+
+    helper_method :inspect_object
+
+    def inspect_object(object)
+      case object
+      when Hash, Array
+        object.inspect
+      when ActionController::Base
+        "#{object.controller_name}##{object.action_name}"
+      else
+        object.to_s
       end
-      
-      helper_method :inspect_object
-      
-      def inspect_object(object)
-        case object
-        when Hash, Array
-          object.inspect
-        when ActionController::Base
-          "#{object.controller_name}##{object.action_name}"
-        else
-          object.to_s
-        end
-      end
-      
+    end
   end
 end
