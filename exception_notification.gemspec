@@ -7,5 +7,8 @@ Gem::Specification.new do |s|
   s.email = "smartinez87@gmail.com"
 
   s.files = ['README.md'] + Dir['lib/**/*']
+
+  s.add_dependency("actionmailer", "~> 3.0.9")
+
   s.require_path = 'lib'
 end
