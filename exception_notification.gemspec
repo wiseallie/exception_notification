@@ -6,7 +6,7 @@ Gem::Specification.new do |s|
   s.summary = "Exception notification by email for Rails apps"
   s.email = "smartinez87@gmail.com"
 
-  s.files = Dir['Rakefile', 'README.md' 'lib/**/*']
+  s.files = Dir['Rakefile', '.gemtest', 'README.md' 'lib/**/*']
   s.test_files = Dir.glob "test/**/*_test.rb"
   s.require_path = 'lib'
 
