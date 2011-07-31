@@ -6,9 +6,11 @@ Gem::Specification.new do |s|
   s.summary = "Exception notification by email for Rails apps"
   s.email = "smartinez87@gmail.com"
 
-  s.files = ['README.md'] + Dir['lib/**/*']
+  s.files = Dir['Rakefile', 'README.md' 'lib/**/*']
+  s.test_files = Dir.glob "test/**/*_test.rb"
+  s.require_path = 'lib'
 
   s.add_dependency("actionmailer", "~> 3.0.9")
-
-  s.require_path = 'lib'
+  s.add_development_dependency "rails", "~> 3.0.9"
+  s.add_development_dependency "sqlite3", "~> 1.3.4"
 end
