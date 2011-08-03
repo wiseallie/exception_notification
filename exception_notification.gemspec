@@ -10,7 +10,7 @@ Gem::Specification.new do |s|
   s.test_files = Dir.glob "test/**/*_test.rb"
   s.require_path = 'lib'
 
-  s.add_dependency("actionmailer", "~> 3.0.9")
-  s.add_development_dependency "rails", "~> 3.0.9"
-  s.add_development_dependency "sqlite3", "~> 1.3.4"
+  s.add_dependency("actionmailer", ">= 3.0.4")
+  s.add_development_dependency "rails", ">= 3.0.4"
+  s.add_development_dependency "sqlite3", ">= 1.3.4"
 end
