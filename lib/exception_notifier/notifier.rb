@@ -4,6 +4,8 @@ require 'pp'
 class ExceptionNotifier
   class Notifier < ActionMailer::Base
     self.mailer_name = 'exception_notifier'
+    #Append application view path to the ExceptionNotifier lookup context.
+    self.append_view_path Rails.root.nil? ? "app/views" : "#{Rails.root}/app/views"  if defined?(Rails)
     self.append_view_path "#{File.dirname(__FILE__)}/views"
 
     class << self
