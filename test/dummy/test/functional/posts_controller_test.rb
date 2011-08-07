@@ -49,7 +49,7 @@ class PostsControllerTest < ActionController::TestCase
     rescue => e
       @ignored_exception = e
       unless ExceptionNotifier.default_ignore_exceptions.include?(@ignored_exception.class)
-        @ignored_mail = ExceptionNotifier::Notifier.exception_notification(request.env, @exception)
+        @ignored_mail = ExceptionNotifier::Notifier.exception_notification(request.env, @ignored_exception)
       end
     end
 
