@@ -83,6 +83,19 @@ In the above case, @document and @person would be made available to the email
 renderer, allowing your new section(s) to access and display them. See the
 existing sections defined by the plugin for examples of how to write your own.
 
+Background Notifications
+---
+
+If you want to send notifications from a background process like
+DelayedJob, you should use the background_exception_notification method
+like this:
+
+    begin
+      some code...
+    rescue => e
+      ExceptionNotifier::Notifier.background_exception_notification(e)
+    end
+
 Manually notify of exception
 ---
 
