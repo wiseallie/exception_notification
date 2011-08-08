@@ -30,6 +30,10 @@ class BackgroundExceptionNotificationTest < ActiveSupport::TestCase
     assert @mail.subject.include? "[Dummy ERROR]  (ZeroDivisionError) \"divided by 0\""
   end
 
+  test "mail should say exception was raised in background" do
+    assert @mail.body.include? "A ZeroDivisionError occurred in background"
+  end
+
   test "mail should contain backtrace in body" do
     assert @mail.body.include? "test/background_exception_notification_test.rb:6"
   end
