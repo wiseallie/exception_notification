@@ -58,11 +58,6 @@ describe application-specific data--just add the section's name to the list
 	   :exception_recipients => %w{exceptions@example.com},
 	   :sections => %w{my_section1 my_section2} + ExceptionNotifier::Notifier.default_sections
 
-When you add a new section or customize a section, you need to inform the gem where the views are.
-Create an initializer called config/initializers/exception_notifier.rb with the following code:
-
-    ExceptionNotifier::Notifier.prepend_view_path File.join(Rails.root, 'app/views')	
-
 If your new section requires information that isn't available by default, make sure
 it is made available to the email using the exception_data macro:
 
