@@ -56,4 +56,17 @@ class PostsControllerTest < ActionController::TestCase
     assert @ignored_exception.class.inspect == "ActiveRecord::RecordNotFound"
     assert_nil @ignored_mail
   end
+
+  test "should filter session_id on secure requests" do
+    request.env['HTTPS'] = 'on'
+    begin
+      @post = posts(:one)
+      post :create, :post => @post.attributes
+    rescue => e
+      @secured_mail = ExceptionNotifier::Notifier.exception_notification(request.env, e)
+    end
+
+    assert request.ssl?
+    assert @secured_mail.body.include? "* session id: [FILTERED]\n  *"
+  end
 end
