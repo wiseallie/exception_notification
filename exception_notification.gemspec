@@ -6,8 +6,8 @@ Gem::Specification.new do |s|
   s.summary = "Exception notification by email for Rails apps"
   s.email = "smartinez87@gmail.com"
 
-  s.files = `git ls-files -- lib`.split("\n") + %w(Rakefile .gemtest README.md)
-  s.test_files = Dir.glob "test/**/*_test.rb"
+  s.files = `git ls-files`.split("\n")
+  s.test_files = `git ls-files -- test`.split("\n")
   s.require_path = 'lib'
 
   s.add_dependency("actionmailer", ">= 3.0.4")
