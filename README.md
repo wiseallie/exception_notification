@@ -1,4 +1,4 @@
-Exception Notifier Plugin for Rails
+Exception Notifier Plugin for Rails [![Travis](http://travis-ci.org/smartinez87/exception_notification.png)](http://travis-ci.org/smartinez87/exception_notification)
 ====
 
 The Exception Notifier plugin provides a mailer object and a default set of
