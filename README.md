@@ -32,8 +32,6 @@ run on production. You can make it work by
 
 Customization
 ---
-By default subject includes exception message. Use :verbose_subject => false
-to exclude it from subject.
 By default, the notification email includes four parts: request, session,
 environment, and backtrace (in that order). You can customize how each of those
 sections are rendered by placing a partial named for that part in your
@@ -78,6 +76,8 @@ it is made available to the email using the exception_data macro:
 In the above case, @document and @person would be made available to the email
 renderer, allowing your new section(s) to access and display them. See the
 existing sections defined by the plugin for examples of how to write your own.
+You can also choose to exclude the exception message from the subject, which is included by default.
+Use :verbose_subject => false to exclude it.
 
 Background Notifications
 ---
