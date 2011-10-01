@@ -27,7 +27,7 @@ class BackgroundExceptionNotificationTest < ActiveSupport::TestCase
   end
 
   test "mail should have a descriptive subject" do
-    assert @mail.subject.include? "[Dummy ERROR]  (ZeroDivisionError) \"divided by 0\""
+    assert @mail.subject == "[Dummy ERROR]  (ZeroDivisionError) \"divided by 0\""
   end
 
   test "mail should say exception was raised in background" do

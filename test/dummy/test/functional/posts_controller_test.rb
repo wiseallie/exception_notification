@@ -28,7 +28,7 @@ class PostsControllerTest < ActionController::TestCase
   end
 
   test "mail should have a descriptive subject" do
-    assert @mail.subject.include? "[Dummy ERROR] # (NoMethodError)"
+    assert @mail.subject.include? "[Dummy ERROR] # (NoMethodError) \"undefined method `nw'"
   end
 
   test "mail should contain backtrace in body" do
