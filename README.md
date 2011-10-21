@@ -90,7 +90,7 @@ To achieve that, you should use the _:ignore_exceptions_ option, like this:
 	   :exception_recipients => %w{exceptions@example.com},
 	   :ignore_exceptions => %w{::ActionView::TemplateError} + ExceptionNotifier::Notifier.default_sections
 
-The above will make ExceptionNotifier ignore a +TemplateError+
+The above will make ExceptionNotifier ignore a *TemplateError*
 exception, plus the ones ignored by default.
 By default, ExceptionNotifier ignores _ActiveRecord::RecordNotFound_,
 _AbstractController::ActionNotFound_ and
