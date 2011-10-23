@@ -10,6 +10,10 @@ class ExceptionNotifier
     end
   end
 
+  def self.default_ignore_crawlers
+    []
+  end
+
   def initialize(app, options = {})
     @app, @options = app, options
 
@@ -20,6 +24,7 @@ class ExceptionNotifier
     Notifier.default_verbose_subject      = @options[:verbose_subject]
 
     @options[:ignore_exceptions] ||= self.class.default_ignore_exceptions
+    @options[:ignore_crawlers]   ||= self.class.default_ignore_crawlers
   end
 
   def call(env)
@@ -28,11 +33,24 @@ class ExceptionNotifier
     options = (env['exception_notifier.options'] ||= Notifier.default_options)
     options.reverse_merge!(@options)
 
-    unless Array.wrap(options[:ignore_exceptions]).include?(exception.class)
+    unless ignored_exception(options[:ignore_exceptions], exception) || from_crawler(options[:ignore_crawlers], env['HTTP_USER_AGENT'])
       Notifier.exception_notification(env, exception).deliver
       env['exception_notifier.delivered'] = true
     end
 
     raise exception
+  end
+
+  private
+
+  def ignored_exception(ignore_array, exception)
+    Array.wrap(ignore_array).include?(exception.class)
+  end
+
+  def from_crawler(ignore_array, agent)
+    ignore_array.each do |crawler|
+      return true if (agent =~ Regexp.new(crawler))
+    end unless ignore_array.blank?
+    false
   end
 end

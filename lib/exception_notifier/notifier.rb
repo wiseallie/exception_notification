@@ -31,7 +31,7 @@ class ExceptionNotifier
       def default_sections
         @default_sections || %w(request session environment backtrace)
       end
-      
+
       def default_verbose_subject
         @default_verbose_subject.nil? || @default_verbose_subject
       end

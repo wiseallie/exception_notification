@@ -70,20 +70,24 @@ class PostsControllerTest < ActionController::TestCase
     assert @secured_mail.body.include? "* session id: [FILTERED]\n  *"
   end
 
-  test "should not include exception message in subject" do
+  test "should ignore exception if from unwanted cralwer" do
+    request.env['HTTP_USER_AGENT'] = "Mozilla/5.0 (compatible; Googlebot/2.1; +http://www.google.com/bot.html)"
     begin
       @post = posts(:one)
       post :create, :post => @post.attributes
     rescue => e
       @exception = e
       custom_env = request.env
-      custom_env['exception_notifier.options']||={}
-      custom_env['exception_notifier.options'].merge!(:verbose_subject => false)
-      @mail = ExceptionNotifier::Notifier.exception_notification(custom_env, @exception)
+      custom_env['exception_notifier.options'] ||= {}
+      custom_env['exception_notifier.options'].merge!(:ignore_crawlers => %w(Googlebot))
+      ignore_array = custom_env['exception_notifier.options'][:ignore_crawlers]
+      unless ExceptionNotifier.new(Dummy::Application, custom_env['exception_notifier.options']).send(:from_crawler, ignore_array, custom_env['HTTP_USER_AGENT'])
+        @ignored_mail = ExceptionNotifier::Notifier.exception_notification(custom_env, @exception)
+      end
     end
-    assert_equal "[Dummy ERROR] # (NoMethodError)", @mail.subject
+
+    assert_nil @ignored_mail
   end
-  
 end
 
 class PostsControllerTestWithoutVerboseSubject < ActionController::TestCase
@@ -98,8 +102,8 @@ class PostsControllerTestWithoutVerboseSubject < ActionController::TestCase
       @mail = ExceptionNotifier::Notifier.exception_notification(request.env, @exception)
     end
   end
-  
+
   test "should not include exception message in subject" do
-    assert_equal "[Dummy ERROR] # (NoMethodError)", @mail.subject
+    assert_equal "[ERROR] # (NoMethodError)", @mail.subject
   end
 end

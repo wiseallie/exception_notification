@@ -32,6 +32,9 @@ run on production. You can make it work by
 
 Customization
 ---
+
+### Sections
+
 By default, the notification email includes four parts: request, session,
 environment, and backtrace (in that order). You can customize how each of those
 sections are rendered by placing a partial named for that part in your
@@ -48,7 +51,7 @@ access to the following variables:
 You can reorder the sections, or exclude sections completely, by altering the
 ExceptionNotifier.sections variable. You can even add new sections that
 describe application-specific data--just add the section's name to the list
-(wherever you'd like), and define the corresponding partial. 
+(wherever you'd like), and define the corresponding partial.
 
     #Example with two new added sections
     Whatever::Application.config.middleware.use ExceptionNotifier,
@@ -76,14 +79,13 @@ it is made available to the email using the exception_data macro:
 In the above case, @document and @person would be made available to the email
 renderer, allowing your new section(s) to access and display them. See the
 existing sections defined by the plugin for examples of how to write your own.
-You can also choose to exclude the exception message from the subject, which is included by default.
-Use _:verbose_subject => false_ to exclude it.
+
+### Ignore Exceptions
 
 You can also ignore types of exceptions, which will make
 ExceptionNotifier avoid sending notifications for the specified exception types.
 To achieve that, you should use the _:ignore_exceptions_ option, like this:
 
-    #Example ignoring some exceptions
     Whatever::Application.config.middleware.use ExceptionNotifier,
 	   :email_prefix => "[Whatever] ",
 	   :sender_address => %{"notifier" <notifier@example.com>},
@@ -95,6 +97,24 @@ exception, plus the ones ignored by default.
 By default, ExceptionNotifier ignores _ActiveRecord::RecordNotFound_,
 _AbstractController::ActionNotFound_ and
 _ActionController::RountingError_.
+
+### Verbose
+
+You can also choose to exclude the exception message from the subject, which is included by default.
+Use _:verbose_subject => false_ to exclude it.
+
+### Ignore Crawlers
+
+In some cases you may want to avoid getting notifications from exceptions
+made by crawlers. Using _:ignore_crawlers_ options like this,
+
+    Whatever::Application.config.middleware.use ExceptionNotifier,
+	   :email_prefix => "[Whatever] ",
+	   :sender_address => %{"notifier" <notifier@example.com>},
+	   :exception_recipients => %w{exceptions@example.com},
+	   :ignore_crawlers => %w{Googlebot bingbot}
+
+will prevent sending those unwanted notifications.
 
 Background Notifications
 ---

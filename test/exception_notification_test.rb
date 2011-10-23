@@ -20,4 +20,8 @@ class ExceptionNotificationTest < ActiveSupport::TestCase
   test "should have verbose subject by default" do
     assert ExceptionNotifier::Notifier.default_options[:verbose_subject] == true
   end
+
+  test "should have ignored crawler by default" do
+    assert ExceptionNotifier.default_ignore_crawlers == []
+  end
 end
