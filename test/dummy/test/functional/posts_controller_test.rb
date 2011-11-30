@@ -35,6 +35,10 @@ class PostsControllerTest < ActionController::TestCase
     assert @mail.body.include? "`method_missing'\n  app/controllers/posts_controller.rb:17:in `create'\n"
   end
 
+  test "mail should contain timestamp of exception in body" do
+    assert @mail.body.include? "Timestamp : #{Time.now}"
+  end
+
   test "should filter sensible data" do
     assert @mail.body.include? "secret\"=>\"[FILTERED]"
   end
