@@ -146,11 +146,11 @@ like this:
 You can include information about the background process that created
 the error by including a data parameter:
 
-    class ResqueExceptionNotifier < Resque::Failure::Base
-      def save
-        ExceptionNotifier::Notifier.background_exception_notification(exception,
-         {:worker => worker.to_s, :queue => queue, :payload => payload})
-      end
+    begin
+      some code...
+    rescue => exception
+      ExceptionNotifier::Notifier.background_exception_notification(exception,
+        {:worker => worker.to_s, :queue => queue, :payload => payload})
     end
 
 
