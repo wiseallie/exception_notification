@@ -6,7 +6,7 @@ class ExceptionNotifier
     self.mailer_name = 'exception_notifier'
 
     #Append application view path to the ExceptionNotifier lookup context.
-    self.append_view_path Rails.root.nil? ? "app/views" : "#{Rails.root}/app/views"  if defined?(Rails)
+    self.append_view_path Rails.root.nil? ? "app/views" : "#{Rails.root}/app/views/exception_notifier" if defined?(Rails)
     self.append_view_path "#{File.dirname(__FILE__)}/views"
 
     class << self
