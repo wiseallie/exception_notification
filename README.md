@@ -174,8 +174,26 @@ Notification
 After an exception notification has been delivered the rack environment variable
 'exception_notifier.delivered' will be set to +true+.
 
-Rails 2.3 stable and earlier
+Versions
 ---
+
+NOTE: Master branch is currently set for v2.6.0
+
+For v2.5.2, see this tag:
+
+<a href="http://github.com/smartinez87/exception_notification/tree/v2.5.2">http://github.com/smartinez87/exception_notification/tree/v2.5.2</a>
+
+For v2.5.0, see tag:
+
+<a href="http://github.com/smartinez87/exception_notification/tree/v2.5.0">http://github.com/smartinez87/exception_notification/tree/v2.5.0</a>
+
+For v2.4.1, see tag:
+
+<a href="http://github.com/smartinez87/exception_notification/tree/v2.4.1">http://github.com/smartinez87/exception_notification/tree/v2.4.1</a>
+
+For v2.4.0, see tag:
+
+<a href="http://github.com/smartinez87/exception_notification/tree/v2.4.0">http://github.com/smartinez87/exception_notification/tree/v2.4.0</a>
 
 If you are running Rails 2.3 then see the branch for that:
 
