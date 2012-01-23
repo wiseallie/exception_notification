@@ -117,6 +117,12 @@ _ActionController::RountingError_.
 You can also choose to exclude the exception message from the subject, which is included by default.
 Use _:verbose_subject => false_ to exclude it.
 
+### Normalize subject
+
+You can also choose to remove numbers from subject so they thread as a single one.
+This is disabled by default.
+Use _:normalize_subject => true_ to enable it.
+
 ### Ignore Crawlers
 
 In some cases you may want to avoid getting notifications from exceptions
@@ -150,7 +156,7 @@ the error by including a data parameter:
       some code...
     rescue => exception
       ExceptionNotifier::Notifier.background_exception_notification(exception,
-        {:worker => worker.to_s, :queue => queue, :payload => payload})
+        :data => {:worker => worker.to_s, :queue => queue, :payload => payload})
     end
 
 
@@ -165,7 +171,8 @@ run. To manually notify of an error you can do something like the following:
     def server_error(exception)
       # Whatever code that handles the exception
 
-      ExceptionNotifier::Notifier.exception_notification(request.env, exception).deliver
+      ExceptionNotifier::Notifier.exception_notification(request.env, exception,
+        :data => {:message => "was doing something wrong"}).deliver
     end
 
 Notification
