@@ -101,7 +101,7 @@ class ExceptionNotifier
 
         @data.each do |name, value|
           instance_variable_set("@#{name}", value)
-        end
+        end if @data
         subject  = compose_subject(exception)
 
         process_custom(options[:custom_message], options[:custom_hash])

@@ -7,7 +7,7 @@ class BackgroundExceptionNotificationTest < ActiveSupport::TestCase
     rescue => e
       @exception = e
       @mail = ExceptionNotifier::Notifier.background_exception_notification(@exception,
-        {:job => 'DivideWorkerJob', :payload => '1/0'})
+        :data => {:job => 'DivideWorkerJob', :payload => '1/0'})
     end
   end
 
