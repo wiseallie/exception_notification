@@ -90,16 +90,16 @@ class ExceptionNotifier
       end
     end
 
-    def background_exception_notification(exception, data={}, options={})
+    def background_exception_notification(exception, options={})
       raise exception if Rails.env.development?
       if @notifier = Rails.application.config.middleware.detect{ |x| x.klass == ExceptionNotifier }
-        @options = (@notifier.args.first || {}).reverse_merge(self.class.default_options)
+        @options   = (@notifier.args.first || {}).reverse_merge(self.class.default_options)
         @exception = exception
         @backtrace = exception.backtrace || []
-        @sections = @options[:background_sections]
-        @data = data
+        @sections  = @options[:background_sections]
+        @data      = options[:data]
 
-        data.each do |name, value|
+        @data.each do |name, value|
           instance_variable_set("@#{name}", value)
         end
         subject  = compose_subject(exception)
