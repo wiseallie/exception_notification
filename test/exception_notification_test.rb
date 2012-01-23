@@ -35,5 +35,8 @@ class ExceptionNotificationTest < ActiveSupport::TestCase
     assert_equal 'N foo N bar N baz N',
       ExceptionNotifier::Notifier.normalize_digits('1 foo 12 bar 123 baz 1234')
   end
-  
+
+  test "should have normalize_subject false by default" do
+    assert ExceptionNotifier::Notifier.default_options[:normalize_subject] == false
+  end
 end
