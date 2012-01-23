@@ -7,7 +7,7 @@ class PostsControllerTest < ActionController::TestCase
       post :create, :post => @post.attributes
     rescue => e
       @exception = e
-      @mail = ExceptionNotifier::Notifier.exception_notification(request.env, @exception, :custom_message => 'My Custom Message', :custom_hash => {:first => 'awesome hash'})
+      @mail = ExceptionNotifier::Notifier.exception_notification(request.env, @exception, {:data => {:message => 'My Custom Message'}})
     end
   end
 
@@ -45,10 +45,6 @@ class PostsControllerTest < ActionController::TestCase
 
   test "mail should contain the custom message" do
     assert @mail.body.include? "My Custom Message"
-  end
-
-  test "mail should contain the custom hash" do
-    assert @mail.body.include? "first: awesome hash"
   end
 
   test "should filter sensible data" do

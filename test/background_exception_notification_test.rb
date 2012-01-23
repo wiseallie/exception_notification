@@ -7,7 +7,7 @@ class BackgroundExceptionNotificationTest < ActiveSupport::TestCase
     rescue => e
       @exception = e
       @mail = ExceptionNotifier::Notifier.background_exception_notification(@exception,
-        :data => {:job => 'DivideWorkerJob', :payload => '1/0'}, :custom_message => 'My Custom Message', :custom_hash => {:first => 'awesome message'})
+        :data => {:job => 'DivideWorkerJob', :payload => '1/0', :message => 'My Custom Message'})
     end
   end
 
@@ -43,14 +43,7 @@ class BackgroundExceptionNotificationTest < ActiveSupport::TestCase
     assert @mail.body.include? '* data:'
     assert @mail.body.include? ':payload=>"1/0"'
     assert @mail.body.include? ':job=>"DivideWorkerJob"'
-  end
-
-  test "mail should contain the custom message" do
     assert @mail.body.include? "My Custom Message"
-  end
-
-  test "mail should contain the custom hash" do
-    assert @mail.body.include? "first: awesome message"
   end
 
   test "mail should not contain any attachments" do

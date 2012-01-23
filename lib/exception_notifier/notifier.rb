@@ -76,11 +76,10 @@ class ExceptionNotifier
       @request    = ActionDispatch::Request.new(env)
       @backtrace  = exception.backtrace ? clean_backtrace(exception) : []
       @sections   = @options[:sections]
-      data        = env['exception_notifier.exception_data'] || {}
+      @data       = (env['exception_notifier.exception_data'] || {}).merge(options[:data] || {})
+      @sections   = @sections + %w(data) unless @data.empty?
 
-      process_custom(options[:custom_message], options[:custom_hash])
-
-      data.each do |name, value|
+      @data.each do |name, value|
         instance_variable_set("@#{name}", value)
       end
       subject = compose_subject(exception, @kontroller)
@@ -97,14 +96,12 @@ class ExceptionNotifier
         @exception = exception
         @backtrace = exception.backtrace || []
         @sections  = @options[:background_sections]
-        @data      = options[:data]
+        @data      = options[:data] || {}
 
         @data.each do |name, value|
           instance_variable_set("@#{name}", value)
-        end if @data
+        end
         subject  = compose_subject(exception)
-
-        process_custom(options[:custom_message], options[:custom_hash])
 
         mail(:to => @options[:exception_recipients], :from => @options[:sender_address], :subject => subject) do |format|
           format.text { render "#{mailer_name}/background_exception_notification" }
@@ -113,14 +110,6 @@ class ExceptionNotifier
     end
 
     private
-
-    def process_custom(m, h)
-      @custom_message = m
-      @custom_hash    = h
-      if @custom_hash || @custom_message
-        @sections = ['custom'] + @sections
-      end
-    end
 
     def compose_subject(exception, kontroller=nil)
       subject = "#{@options[:email_prefix]}"
