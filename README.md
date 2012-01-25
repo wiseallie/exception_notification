@@ -96,8 +96,15 @@ notifications.
 
 ### Ignore Exceptions
 
-You can also ignore types of exceptions, which will make
-ExceptionNotifier avoid sending notifications for the specified exception types.
+You can choose to ignore certain exceptions, which will make
+ExceptionNotifier avoid sending notifications for those specified.
+There are three ways of specifying which exceptions to ignore:
+- :ignore_exceptions - By exception class (i.e. ignore RecordNotFound ones)
+- :ignore_crawlers   - From crwaler (i.e. ignore ones originated by Googlebot)
+- :ignore_if         - Custom (i.e. ignore exceptions that satisfy some condition)
+
+* _ignore_exceptions_
+Ignore specified exception types.
 To achieve that, you should use the _:ignore_exceptions_ option, like this:
 
     Whatever::Application.config.middleware.use ExceptionNotifier,
@@ -112,6 +119,27 @@ By default, ExceptionNotifier ignores _ActiveRecord::RecordNotFound_,
 _AbstractController::ActionNotFound_ and
 _ActionController::RountingError_.
 
+* _ignore_crawlers_
+In some cases you may want to avoid getting notifications from exceptions
+made by crawlers. Using _:ignore_crawlers_ option like this,
+
+    Whatever::Application.config.middleware.use ExceptionNotifier,
+     :email_prefix => "[Whatever] ",
+     :sender_address => %{"notifier" <notifier@example.com>},
+     :exception_recipients => %w{exceptions@example.com},
+     :ignore_crawlers => %w{Googlebot bingbot}
+
+will prevent sending those unwanted notifications.
+
+* _ignore_if_
+Last but not least, you can ignore exceptions based on a condition, by
+
+    Whatever::Application.config.middleware.use ExceptionNotifier,
+     :email_prefix         => "[Whatever] ",
+     :sender_address       => %{"notifier" <notifier@example.com>},
+     :exception_recipients => %w{exceptions@example.com},
+     :ignore_if            => lambda { |e| e.message =~ /^Couldn't find Page with ID=/ }
+
 ### Verbose
 
 You can also choose to exclude the exception message from the subject, which is included by default.
@@ -123,18 +151,6 @@ You can also choose to remove numbers from subject so they thread as a single on
 This is disabled by default.
 Use _:normalize_subject => true_ to enable it.
 
-### Ignore Crawlers
-
-In some cases you may want to avoid getting notifications from exceptions
-made by crawlers. Using _:ignore_crawlers_ options like this,
-
-    Whatever::Application.config.middleware.use ExceptionNotifier,
-     :email_prefix => "[Whatever] ",
-     :sender_address => %{"notifier" <notifier@example.com>},
-     :exception_recipients => %w{exceptions@example.com},
-     :ignore_crawlers => %w{Googlebot bingbot}
-
-will prevent sending those unwanted notifications.
 
 Background Notifications
 ---
