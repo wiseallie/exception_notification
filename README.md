@@ -99,20 +99,24 @@ notifications.
 You can choose to ignore certain exceptions, which will make
 ExceptionNotifier avoid sending notifications for those specified.
 There are three ways of specifying which exceptions to ignore:
+
 - :ignore_exceptions - By exception class (i.e. ignore RecordNotFound ones)
+
 - :ignore_crawlers   - From crwaler (i.e. ignore ones originated by Googlebot)
+
 - :ignore_if         - Custom (i.e. ignore exceptions that satisfy some condition)
 
-* _ignore_exceptions_
+
+* _:ignore_exceptions_
 
 Ignore specified exception types.
 To achieve that, you should use the _:ignore_exceptions_ option, like this:
 
      Whatever::Application.config.middleware.use ExceptionNotifier,
-      :email_prefix => "[Whatever] ",
-      :sender_address => %{"notifier" <notifier@example.com>},
+      :email_prefix         => "[Whatever] ",
+      :sender_address       => %{"notifier" <notifier@example.com>},
       :exception_recipients => %w{exceptions@example.com},
-      :ignore_exceptions => %w{::ActionView::TemplateError} + ExceptionNotifier.default_ignore_exceptions
+      :ignore_exceptions    => %w{::ActionView::TemplateError} + ExceptionNotifier.default_ignore_exceptions
 
 The above will make ExceptionNotifier ignore a *TemplateError*
 exception, plus the ones ignored by default.
@@ -120,20 +124,20 @@ By default, ExceptionNotifier ignores _ActiveRecord::RecordNotFound_,
 _AbstractController::ActionNotFound_ and
 _ActionController::RountingError_.
 
-* _ignore_crawlers_
+* _:ignore_crawlers_
 
 In some cases you may want to avoid getting notifications from exceptions
 made by crawlers. Using _:ignore_crawlers_ option like this,
 
      Whatever::Application.config.middleware.use ExceptionNotifier,
-      :email_prefix => "[Whatever] ",
-      :sender_address => %{"notifier" <notifier@example.com>},
+      :email_prefix         => "[Whatever] ",
+      :sender_address       => %{"notifier" <notifier@example.com>},
       :exception_recipients => %w{exceptions@example.com},
-      :ignore_crawlers => %w{Googlebot bingbot}
+      :ignore_crawlers      => %w{Googlebot bingbot}
 
 will prevent sending those unwanted notifications.
 
-* _ignore_if_
+* _:ignore_if_
 
 Last but not least, you can ignore exceptions based on a condition, by
 
