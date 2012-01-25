@@ -104,14 +104,15 @@ There are three ways of specifying which exceptions to ignore:
 - :ignore_if         - Custom (i.e. ignore exceptions that satisfy some condition)
 
 * _ignore_exceptions_
+
 Ignore specified exception types.
 To achieve that, you should use the _:ignore_exceptions_ option, like this:
 
-    Whatever::Application.config.middleware.use ExceptionNotifier,
-     :email_prefix => "[Whatever] ",
-     :sender_address => %{"notifier" <notifier@example.com>},
-     :exception_recipients => %w{exceptions@example.com},
-     :ignore_exceptions => %w{::ActionView::TemplateError} + ExceptionNotifier.default_ignore_exceptions
+     Whatever::Application.config.middleware.use ExceptionNotifier,
+      :email_prefix => "[Whatever] ",
+      :sender_address => %{"notifier" <notifier@example.com>},
+      :exception_recipients => %w{exceptions@example.com},
+      :ignore_exceptions => %w{::ActionView::TemplateError} + ExceptionNotifier.default_ignore_exceptions
 
 The above will make ExceptionNotifier ignore a *TemplateError*
 exception, plus the ones ignored by default.
@@ -120,25 +121,27 @@ _AbstractController::ActionNotFound_ and
 _ActionController::RountingError_.
 
 * _ignore_crawlers_
+
 In some cases you may want to avoid getting notifications from exceptions
 made by crawlers. Using _:ignore_crawlers_ option like this,
 
-    Whatever::Application.config.middleware.use ExceptionNotifier,
-     :email_prefix => "[Whatever] ",
-     :sender_address => %{"notifier" <notifier@example.com>},
-     :exception_recipients => %w{exceptions@example.com},
-     :ignore_crawlers => %w{Googlebot bingbot}
+     Whatever::Application.config.middleware.use ExceptionNotifier,
+      :email_prefix => "[Whatever] ",
+      :sender_address => %{"notifier" <notifier@example.com>},
+      :exception_recipients => %w{exceptions@example.com},
+      :ignore_crawlers => %w{Googlebot bingbot}
 
 will prevent sending those unwanted notifications.
 
 * _ignore_if_
+
 Last but not least, you can ignore exceptions based on a condition, by
 
-    Whatever::Application.config.middleware.use ExceptionNotifier,
-     :email_prefix         => "[Whatever] ",
-     :sender_address       => %{"notifier" <notifier@example.com>},
-     :exception_recipients => %w{exceptions@example.com},
-     :ignore_if            => lambda { |e| e.message =~ /^Couldn't find Page with ID=/ }
+     Whatever::Application.config.middleware.use ExceptionNotifier,
+      :email_prefix         => "[Whatever] ",
+      :sender_address       => %{"notifier" <notifier@example.com>},
+      :exception_recipients => %w{exceptions@example.com},
+      :ignore_if            => lambda { |e| e.message =~ /^Couldn't find Page with ID=/ }
 
 ### Verbose
 
