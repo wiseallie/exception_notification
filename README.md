@@ -106,7 +106,7 @@ There are three ways of specifying which exceptions to ignore:
 
 - :ignore_if         - Custom (i.e. ignore exceptions that satisfy some condition)
 
-
+---
 
 * _:ignore_exceptions_
 
