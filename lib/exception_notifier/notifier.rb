@@ -66,7 +66,6 @@ class ExceptionNotifier
     end
 
     def exception_notification(env, exception, options={})
-      raise exception if Rails.env.development?
       self.append_view_path Rails.root.nil? ? "app/views" : "#{Rails.root}/app/views" if defined?(Rails)
 
       @env        = env
@@ -90,7 +89,6 @@ class ExceptionNotifier
     end
 
     def background_exception_notification(exception, options={})
-      raise exception if Rails.env.development?
       if @notifier = Rails.application.config.middleware.detect{ |x| x.klass == ExceptionNotifier }
         @options   = (@notifier.args.first || {}).reverse_merge(self.class.default_options)
         @exception = exception
