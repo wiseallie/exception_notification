@@ -239,4 +239,4 @@ Support and tickets
 
 <a href="https://github.com/smartinez87/exception_notification/issues">https://github.com/smartinez87/exception_notification/issues</a>
 
-Copyright (c) 2005 Jamis Buck, released under the MIT license
+Copyright (c) 2005 Jamis Buck, released under the MIT license: <a href="http://www.opensource.org/licenses/MIT">http://www.opensource.org/licenses/MIT</a>
