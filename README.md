@@ -12,6 +12,9 @@ application. The plugin is configurable, allowing programmers to specify:
 The email includes information about the current request, session, and
 environment, and also gives a backtrace of the exception.
 
+There's a great [Railscast about Exception Notifications](http://railscasts.com/episodes/104-exception-notifications-revised)
+you can see that may help you getting started.
+
 Installation
 ---
 
