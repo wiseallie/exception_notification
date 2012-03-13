@@ -6,6 +6,7 @@ class BackgroundExceptionNotificationTest < ActiveSupport::TestCase
       1/0
     rescue => e
       @exception = e
+      @time = Time.current
       @mail = ExceptionNotifier::Notifier.background_exception_notification(@exception,
         :data => {:job => 'DivideWorkerJob', :payload => '1/0', :message => 'My Custom Message'})
     end
@@ -31,8 +32,8 @@ class BackgroundExceptionNotificationTest < ActiveSupport::TestCase
     assert @mail.subject == "[Dummy ERROR]  (ZeroDivisionError) \"divided by 0\""
   end
 
-  test "mail should say exception was raised in background" do
-    assert @mail.body.include? "A ZeroDivisionError occurred in background"
+  test "mail should say exception was raised in background at show timestamp" do
+    assert @mail.body.include? "A ZeroDivisionError occurred in background at #{@time}"
   end
 
   test "mail should contain backtrace in body" do
