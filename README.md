@@ -105,7 +105,7 @@ There are three ways of specifying which exceptions to ignore:
 
 - :ignore_exceptions - By exception class (i.e. ignore RecordNotFound ones)
 
-- :ignore_crawlers   - From crwaler (i.e. ignore ones originated by Googlebot)
+- :ignore_crawlers   - From crawler (i.e. ignore ones originated by Googlebot)
 
 - :ignore_if         - Custom (i.e. ignore exceptions that satisfy some condition)
 
