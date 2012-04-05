@@ -3,11 +3,7 @@ Exception Notifier Plugin for Rails ![project status](http://stillmaintained.com
 
 The Exception Notifier plugin provides a mailer object and a default set of
 templates for sending email notifications when errors occur in a Rails
-application. The plugin is configurable, allowing programmers to specify:
-
-* the sender address of the email
-* the recipient addresses
-* the text used to prefix the subject line
+application.
 
 The email includes information about the current request, session, and
 environment, and also gives a backtrace of the exception.
