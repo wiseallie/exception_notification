@@ -166,8 +166,11 @@ Whatever::Application.config.middleware.use ExceptionNotifier,
   :email_prefix         => "[Whatever] ",
   :sender_address       => %{"notifier" <notifier@example.com>},
   :exception_recipients => %w{exceptions@example.com},
-  :ignore_if            => lambda { |e| e.message =~ /^Couldn't find Page with ID=/ }
+  :ignore_if            => lambda { |env, e| e.message =~ /^Couldn't find Page with ID=/ }
 ```
+
+You can make use of both the environment and the exception inside the lambda to decide wether to
+avoid or not sending the notification.
 
 ### Verbose
 

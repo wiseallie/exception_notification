@@ -100,6 +100,25 @@ class PostsControllerTest < ActionController::TestCase
 
     assert_nil @ignored_mail
   end
+
+  test "should ignore exception if satisfies conditional ignore" do
+    request.env['IGNOREME'] = "IGNOREME"
+    begin
+      @post = posts(:one)
+      post :create, :post => @post.attributes
+    rescue => e
+      @exception = e
+      custom_env = request.env
+      custom_env['exception_notifier.options'] ||= {}
+      ignore_cond = {:ignore_if => lambda {|env, e| (env['IGNOREME'] == 'IGNOREME') && (e.message =~ /undefined method/)}}
+      custom_env['exception_notifier.options'].merge!(ignore_cond)
+      unless ExceptionNotifier.new(Dummy::Application, custom_env['exception_notifier.options']).send(:conditionally_ignored, ignore_cond[:ignore_if], custom_env, @exception)
+        @ignored_mail = ExceptionNotifier::Notifier.exception_notification(custom_env, @exception)
+      end
+    end
+
+    assert_nil @ignored_mail
+  end
 end
 
 class PostsControllerTestWithoutVerboseSubject < ActionController::TestCase

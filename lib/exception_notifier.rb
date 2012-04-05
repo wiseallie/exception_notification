@@ -27,7 +27,7 @@ class ExceptionNotifier
 
     @options[:ignore_exceptions] ||= self.class.default_ignore_exceptions
     @options[:ignore_crawlers]   ||= self.class.default_ignore_crawlers
-    @options[:ignore_if]         ||= lambda { |e| false }
+    @options[:ignore_if]         ||= lambda { |env, e| false }
   end
 
   def call(env)
@@ -38,7 +38,7 @@ class ExceptionNotifier
 
     unless ignored_exception(options[:ignore_exceptions], exception)       ||
            from_crawler(options[:ignore_crawlers], env['HTTP_USER_AGENT']) ||
-           options[:ignore_if].call(exception)
+           conditionally_ignored(options[:ignore_if], env, exception)
       Notifier.exception_notification(env, exception).deliver
       env['exception_notifier.delivered'] = true
     end
@@ -56,6 +56,12 @@ class ExceptionNotifier
     ignore_array.each do |crawler|
       return true if (agent =~ Regexp.new(crawler))
     end unless ignore_array.blank?
+    false
+  end
+
+  def conditionally_ignored(ignore_proc, env, exception)
+    ignore_proc.call(env, exception)
+  rescue Exception => ex
     false
   end
 end
