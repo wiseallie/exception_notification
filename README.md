@@ -11,6 +11,8 @@ environment, and also gives a backtrace of the exception.
 There's a great [Railscast about Exception Notifications](http://railscasts.com/episodes/104-exception-notifications-revised)
 you can see that may help you getting started.
 
+[Follow us on Twitter](https://twitter.com/exception_notif) to get updates and notices about new releases.
+
 Installation
 ---
 
