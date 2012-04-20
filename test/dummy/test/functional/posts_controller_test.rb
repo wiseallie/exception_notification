@@ -165,3 +165,19 @@ class PostsControllerTestBadRequestData < ActionController::TestCase
     assert_match /ERROR: Failed to generate exception summary/, @mail.body.to_s
   end
 end
+
+class PostsControllerTestBackgroundNotification < ActionController::TestCase
+  tests PostsController
+  setup do
+    begin
+      @post = posts(:one)
+      post :create, :post => @post.attributes
+    rescue => exception
+      @mail = ExceptionNotifier::Notifier.background_exception_notification(exception)
+    end
+  end
+
+  test "mail should contain the specified section" do
+    assert @mail.body.include? "* New background section for testing"
+  end
+end

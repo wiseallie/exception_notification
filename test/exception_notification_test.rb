@@ -20,7 +20,9 @@ class ExceptionNotificationTest < ActiveSupport::TestCase
   end
 
   test "should have default background sections" do
-    assert ExceptionNotifier::Notifier.default_background_sections == %w(backtrace data)
+    for section in %w(backtrace data)
+      assert ExceptionNotifier::Notifier.default_background_sections.include? section
+    end
   end
 
   test "should have verbose subject by default" do
