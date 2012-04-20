@@ -234,7 +234,11 @@ After an exception notification has been delivered the rack environment variable
 Versions
 ---
 
-NOTE: Master branch is currently set for v2.6.0
+NOTE: Master branch is currently set for v2.6.1
+
+For v2.6.0, see this tag:
+
+<a href="http://github.com/smartinez87/exception_notification/tree/v2.6.0">http://github.com/smartinez87/exception_notification/tree/v2.6.0</a>
 
 For v2.5.2, see this tag:
 
@@ -244,13 +248,9 @@ For v2.5.0, see tag:
 
 <a href="http://github.com/smartinez87/exception_notification/tree/v2.5.0">http://github.com/smartinez87/exception_notification/tree/v2.5.0</a>
 
-For v2.4.1, see tag:
+For previous releases, visit:
 
-<a href="http://github.com/smartinez87/exception_notification/tree/v2.4.1">http://github.com/smartinez87/exception_notification/tree/v2.4.1</a>
-
-For v2.4.0, see tag:
-
-<a href="http://github.com/smartinez87/exception_notification/tree/v2.4.0">http://github.com/smartinez87/exception_notification/tree/v2.4.0</a>
+<a href="https://github.com/smartinez87/exception_notification/tags">https://github.com/smartinez87/exception_notification/tags</a>
 
 If you are running Rails 2.3 then see the branch for that:
 
