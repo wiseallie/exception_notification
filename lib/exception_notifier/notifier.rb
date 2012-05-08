@@ -85,6 +85,7 @@ class ExceptionNotifier
 
       mail(:to => @options[:exception_recipients], :from => @options[:sender_address], :subject => subject) do |format|
         format.text { render "#{mailer_name}/exception_notification" }
+        format.html { render "#{mailer_name}/exception_notification" }
       end
     end
 
@@ -105,6 +106,7 @@ class ExceptionNotifier
 
         mail(:to => @options[:exception_recipients], :from => @options[:sender_address], :subject => subject) do |format|
           format.text { render "#{mailer_name}/background_exception_notification" }
+          format.html { render "#{mailer_name}/background_exception_notification" }
         end.deliver
       end
     end
