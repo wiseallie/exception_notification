@@ -13,6 +13,10 @@ class ExceptionNotificationTest < ActiveSupport::TestCase
     assert ExceptionNotifier::Notifier.default_email_prefix == "[Dummy ERROR] "
   end
 
+  test "should have default email format overriden" do
+    assert ExceptionNotifier::Notifier.default_email_format == :text
+  end
+
   test "should have default sections" do
     for section in %w(request session environment backtrace)
       assert ExceptionNotifier::Notifier.default_sections.include? section

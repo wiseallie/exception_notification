@@ -20,6 +20,7 @@ class ExceptionNotifier
     Notifier.default_sender_address       = @options[:sender_address]
     Notifier.default_exception_recipients = @options[:exception_recipients]
     Notifier.default_email_prefix         = @options[:email_prefix]
+    Notifier.default_email_format         = @options[:email_format]
     Notifier.default_sections             = @options[:sections]
     Notifier.default_background_sections  = @options[:background_sections]
     Notifier.default_verbose_subject      = @options[:verbose_subject]

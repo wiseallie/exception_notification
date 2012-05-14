@@ -12,6 +12,7 @@ class ExceptionNotifier
       attr_writer :default_sender_address
       attr_writer :default_exception_recipients
       attr_writer :default_email_prefix
+      attr_writer :default_email_format
       attr_writer :default_sections
       attr_writer :default_background_sections
       attr_writer :default_verbose_subject
@@ -27,6 +28,10 @@ class ExceptionNotifier
 
       def default_email_prefix
         @default_email_prefix || "[ERROR] "
+      end
+
+      def default_email_format
+        @default_email_format || :text
       end
 
       def default_sections
@@ -49,6 +54,7 @@ class ExceptionNotifier
         { :sender_address => default_sender_address,
           :exception_recipients => default_exception_recipients,
           :email_prefix => default_email_prefix,
+          :email_format => default_email_format,
           :sections => default_sections,
           :background_sections => default_background_sections,
           :verbose_subject => default_verbose_subject,
@@ -84,13 +90,11 @@ class ExceptionNotifier
       end
       subject = compose_subject(exception, @kontroller)
 
-      mail(:to => @options[:exception_recipients],
-           :from => @options[:sender_address],
-           :subject => subject,
-           :template_name => 'exception_notification') do |format|
+      mail(:to => @options[:exception_recipients], :from => @options[:sender_address],
+           :subject => subject, :template_name => 'exception_notification') do |format|
              format.text
-             format.html
-           end
+             format.html if html_mail?
+      end
     end
 
     def background_exception_notification(exception, options={})
@@ -108,13 +112,11 @@ class ExceptionNotifier
         end
         subject  = compose_subject(exception)
 
-        mail(:to => @options[:exception_recipients], 
-             :from => @options[:sender_address], 
-             :subject => subject,
-             :template_name => 'background_exception_notification') do |format|
+        mail(:to => @options[:exception_recipients], :from => @options[:sender_address],
+             :subject => subject, :template_name => 'background_exception_notification') do |format|
                format.text
-               format.html
-             end.deliver
+               format.html if html_mail?
+        end.deliver
       end
     end
 
@@ -148,6 +150,10 @@ class ExceptionNotifier
       else
         object.to_s
       end
+    end
+
+    def html_mail?
+      @options[:email_format] == :html
     end
   end
 end

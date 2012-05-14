@@ -19,6 +19,10 @@ class PostsControllerTest < ActionController::TestCase
     assert_not_nil @mail
   end
 
+  test "mail should be plain text and UTF-8 enconded by default" do
+    assert @mail.content_type == "text/plain; charset=UTF-8"
+  end
+
   test "mail should have a from address set" do
     assert @mail.from == ["dummynotifier@example.com"]
   end
@@ -40,7 +44,7 @@ class PostsControllerTest < ActionController::TestCase
   end
 
   test "mail should contain the newly defined section" do
-    assert @mail.encoded.include? "* New section for testing"
+    assert @mail.encoded.include? "* New text section for testing"
   end
 
   test "mail should contain the custom message" do
@@ -118,6 +122,21 @@ class PostsControllerTest < ActionController::TestCase
     end
 
     assert_nil @ignored_mail
+  end
+
+  test "should send html email when selected html format" do
+    begin
+      @post = posts(:one)
+      post :create, :post => @post.attributes
+    rescue => e
+      @exception = e
+      custom_env = request.env
+      custom_env['exception_notifier.options'] ||= {}
+      custom_env['exception_notifier.options'].merge!({:email_format => :html})
+      @mail = ExceptionNotifier::Notifier.exception_notification(custom_env, @exception)
+    end
+
+    assert @mail.content_type.include? "multipart/alternative"
   end
 end
 

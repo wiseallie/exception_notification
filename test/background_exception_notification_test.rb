@@ -12,7 +12,8 @@ class BackgroundExceptionNotificationTest < ActiveSupport::TestCase
     end
   end
 
-  test "mail should be multipart" do
+  test "mail should be plain text and UTF-8 enconded by default" do
+    assert @mail.content_type == "text/plain; charset=UTF-8"
   end
 
   test "should have raised an exception" do

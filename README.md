@@ -181,6 +181,11 @@ You can also choose to remove numbers from subject so they thread as a single on
 This is disabled by default.
 Use _:normalize_subject => true_ to enable it.
 
+### HTML
+
+You may want to send multipart notifications instead of just plain text, which ExceptionNotification sends by default.
+You can do so by adding this to the configuration: _:email_format => :html_.
+
 
 Background Notifications
 ---
