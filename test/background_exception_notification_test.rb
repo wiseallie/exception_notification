@@ -51,7 +51,6 @@ class BackgroundExceptionNotificationTest < ActiveSupport::TestCase
     assert @vowel_mail.encoded.include? "An ActiveRecord::RecordNotFound occurred in background at #{@time}"
   end
 
-
   test "mail should contain backtrace in body" do
     assert @mail.encoded.include?("test/background_exception_notification_test.rb:6"), "\n#{@mail.inspect}"
   end
