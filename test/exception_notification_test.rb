@@ -23,6 +23,23 @@ class ExceptionNotificationTest < ActiveSupport::TestCase
     end
   end
 
+  test "should have default section overridden" do
+    begin
+      test_string = '--- this is a test ---'
+      env = {}
+      exception = StandardError.new("Test Error")
+      options = {:sections => %w(environment)}
+
+      section_partial = Rails.root.join('app', 'views', 'exception_notifier', '_environment.text.erb')
+
+      File.open(section_partial, 'w+') { |f| f.puts test_string }
+
+      assert ExceptionNotifier::Notifier.exception_notification(env, exception, options).body =~ /#{test_string}/
+    ensure
+      File.delete section_partial
+    end
+  end
+
   test "should have default background sections" do
     for section in %w(backtrace data)
       assert ExceptionNotifier::Notifier.default_background_sections.include? section
