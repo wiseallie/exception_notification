@@ -3,6 +3,9 @@
 * enhancements
   * Support fot HTML notifications (by @Xenofex)
 
+* bug fixes
+  * Allow default sections to be overridden (by @jfarmer)
+
 == 2.6.1
 
 * bug fixes
