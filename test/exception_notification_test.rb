@@ -5,15 +5,15 @@ class ExceptionNotificationTest < ActiveSupport::TestCase
     assert ExceptionNotifier.default_ignore_exceptions == ['ActiveRecord::RecordNotFound', 'AbstractController::ActionNotFound', 'ActionController::RoutingError']
   end
 
-  test "should have default sender address overriden" do
+  test "should have default sender address overridden" do
     assert ExceptionNotifier::Notifier.default_sender_address == %("Dummy Notifier" <dummynotifier@example.com>)
   end
 
-  test "should have default email prefix overriden" do
+  test "should have default email prefix overridden" do
     assert ExceptionNotifier::Notifier.default_email_prefix == "[Dummy ERROR] "
   end
 
-  test "should have default email format overriden" do
+  test "should have default email format overridden" do
     assert ExceptionNotifier::Notifier.default_email_format == :text
   end
 
