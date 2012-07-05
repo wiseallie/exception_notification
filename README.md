@@ -236,7 +236,7 @@ Notification
 ---
 
 After an exception notification has been delivered the rack environment variable
-'exception_notifier.delivered' will be set to +true+.
+'exception_notifier.delivered' will be set to `true`.
 
 Versions
 ---
