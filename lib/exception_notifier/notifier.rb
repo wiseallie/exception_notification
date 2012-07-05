@@ -73,7 +73,7 @@ class ExceptionNotifier
     end
 
     def exception_notification(env, exception, options={})
-      self.prepend_view_path Rails.root.nil? ? "app/views" : "#{Rails.root}/app/views" if defined?(Rails)
+      load_custom_views
 
       @env        = env
       @exception  = exception
@@ -89,7 +89,7 @@ class ExceptionNotifier
     end
 
     def background_exception_notification(exception, options={})
-      self.prepend_view_path Rails.root.nil? ? "app/views" : "#{Rails.root}/app/views" if defined?(Rails)
+      load_custom_views
 
       if @notifier = Rails.application.config.middleware.detect{ |x| x.klass == ExceptionNotifier }
         @options   = options.reverse_merge(@notifier.args.first || {}).reverse_merge(self.class.default_options)
@@ -154,6 +154,10 @@ class ExceptionNotifier
         format.text
         format.html if html_mail?
       end
+    end
+
+    def load_custom_views
+      self.prepend_view_path Rails.root.nil? ? "app/views" : "#{Rails.root}/app/views" if defined?(Rails)
     end
   end
 end
