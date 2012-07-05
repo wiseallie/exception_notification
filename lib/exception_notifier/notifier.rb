@@ -85,16 +85,7 @@ class ExceptionNotifier
       @data       = (env['exception_notifier.exception_data'] || {}).merge(options[:data] || {})
       @sections   = @sections + %w(data) unless @data.empty?
 
-      @data.each do |name, value|
-        instance_variable_set("@#{name}", value)
-      end
-      subject = compose_subject(exception, @kontroller)
-
-      mail(:to => @options[:exception_recipients], :from => @options[:sender_address],
-           :subject => subject, :template_name => 'exception_notification') do |format|
-             format.text
-             format.html if html_mail?
-      end
+      compose_email
     end
 
     def background_exception_notification(exception, options={})
@@ -107,28 +98,25 @@ class ExceptionNotifier
         @sections  = @options[:background_sections]
         @data      = options[:data] || {}
 
-        @data.each do |name, value|
-          instance_variable_set("@#{name}", value)
-        end
-        subject  = compose_subject(exception)
-
-        mail(:to => @options[:exception_recipients], :from => @options[:sender_address],
-             :subject => subject, :template_name => 'background_exception_notification') do |format|
-               format.text
-               format.html if html_mail?
-        end.deliver
+        compose_email.deliver
       end
     end
 
     private
 
-    def compose_subject(exception, kontroller=nil)
+    def compose_subject
       subject = "#{@options[:email_prefix]}"
-      subject << "#{kontroller.controller_name}##{kontroller.action_name}" if kontroller
-      subject << " (#{exception.class})"
-      subject << " #{exception.message.inspect}" if @options[:verbose_subject]
+      subject << "#{@kontroller.controller_name}##{@kontroller.action_name}" if @kontroller
+      subject << " (#{@exception.class})"
+      subject << " #{@exception.message.inspect}" if @options[:verbose_subject]
       subject = normalize_digits(subject) if @options[:normalize_subject]
       subject.length > 120 ? subject[0...120] + "..." : subject
+    end
+
+    def set_data_variables
+      @data.each do |name, value|
+        instance_variable_set("@#{name}", value)
+      end
     end
 
     def clean_backtrace(exception)
@@ -154,6 +142,18 @@ class ExceptionNotifier
 
     def html_mail?
       @options[:email_format] == :html
+    end
+
+    def compose_email
+      set_data_variables
+      subject = compose_subject
+      name = @env.nil? ? 'background_exception_notification' : 'exception_notification'
+
+      mail(:to => @options[:exception_recipients], :from => @options[:sender_address],
+           :subject => subject, :template_name => name) do |format|
+        format.text
+        format.html if html_mail?
+      end
     end
   end
 end
