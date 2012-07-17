@@ -48,8 +48,7 @@ Whatever::Application.config.middleware.use ExceptionNotifier,
   :email_prefix => "[Whatever] ",
   :sender_address => %{"notifier" <notifier@example.com>},
   :exception_recipients => %w{exceptions@example.com},
-  :campfire => {:subdomain => 'my_subdomain', :token => 'my_token',
-:room_name => 'my_room'}
+  :campfire => {:subdomain => 'my_subdomain', :token => 'my_token', :room_name => 'my_room'}
 ```
 
 For more options to set Campfire, like _ssl_, check
