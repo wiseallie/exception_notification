@@ -35,6 +35,26 @@ Whatever::Application.config.middleware.use ExceptionNotifier,
   :exception_recipients => %w{exceptions@example.com}
 ```
 
+Notifiers
+---
+
+Additionally, ExceptionNotification supports Campfire integration, so
+you can send alerts to your Campfire room.
+To configure it, you need to set the subdomain, token and room name,
+like this
+
+```ruby
+Whatever::Application.config.middleware.use ExceptionNotifier,
+  :email_prefix => "[Whatever] ",
+  :sender_address => %{"notifier" <notifier@example.com>},
+  :exception_recipients => %w{exceptions@example.com},
+  :campfire => {:subdomain => 'my_subdomain', :token => 'my_token',
+:room_name => 'my_room'}
+```
+
+For more options to set Campfire, like _ssl_, check
+[here](https://github.com/collectiveidea/tinder/blob/master/lib/tinder/campfire.rb#L17).
+
 Customization
 ---
 
@@ -241,7 +261,7 @@ After an exception notification has been delivered the rack environment variable
 Versions
 ---
 
-NOTE: Master branch is currently set for v2.6.2
+NOTE: Master branch is currently set for v2.7.0
 
 For v2.6.1, see this tag:
 
