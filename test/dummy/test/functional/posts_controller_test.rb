@@ -31,8 +31,12 @@ class PostsControllerTest < ActionController::TestCase
     assert @mail.to == ["dummyexceptions@example.com"]
   end
 
-  test "mail should have a descriptive subject" do
-    assert @mail.subject.include? "[Dummy ERROR] # (NoMethodError) \"undefined method `nw'"
+  test "mail subject should have the proper prefix" do
+    assert @mail.subject.include? "[Dummy ERROR]"
+  end
+
+  test "mail subject should include descriptive error message" do
+    assert @mail.subject.include? "(NoMethodError) \"undefined method `nw'"
   end
 
   test "mail should contain backtrace in body" do
