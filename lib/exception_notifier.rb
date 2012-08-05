@@ -42,7 +42,6 @@ class ExceptionNotifier
            from_crawler(options[:ignore_crawlers], env['HTTP_USER_AGENT']) ||
            conditionally_ignored(options[:ignore_if], env, exception)
       mail = Notifier.exception_notification(env, exception)
-      mail.delivery_method.settings.merge!(options[:smtp_settings]) if options[:smtp_settings]
       mail.deliver
       env['exception_notifier.delivered'] = true
     end

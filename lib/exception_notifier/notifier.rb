@@ -65,7 +65,7 @@ class ExceptionNotifier
           :verbose_subject => default_verbose_subject,
           :normalize_subject => default_normalize_subject,
           :template_path => mailer_name,
-          :default_smtp_settings => default_smtp_settings }
+          :smtp_settings => default_smtp_settings }
       end
 
       def normalize_digits(string)
@@ -90,7 +90,7 @@ class ExceptionNotifier
       @sections   = @options[:sections]
       @data       = (env['exception_notifier.exception_data'] || {}).merge(options[:data] || {})
       @sections   = @sections + %w(data) unless @data.empty?
-
+      
       compose_email
     end
 
@@ -155,11 +155,15 @@ class ExceptionNotifier
       subject = compose_subject
       name = @env.nil? ? 'background_exception_notification' : 'exception_notification'
 
-      mail(:to => @options[:exception_recipients], :from => @options[:sender_address],
+      mail = mail(:to => @options[:exception_recipients], :from => @options[:sender_address],
            :subject => subject, :template_name => name) do |format|
         format.text
         format.html if html_mail?
       end
+      
+      mail.delivery_method.settings.merge!(@options[:smtp_settings]) if @options[:smtp_settings]
+      
+      mail
     end
 
     def load_custom_views
