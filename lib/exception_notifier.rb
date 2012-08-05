@@ -1,7 +1,9 @@
 require 'action_dispatch'
 require 'exception_notifier/notifier'
+require 'exception_notifier/campfire_notifier'
 
 class ExceptionNotifier
+
   def self.default_ignore_exceptions
     [].tap do |exceptions|
       exceptions << 'ActiveRecord::RecordNotFound'
@@ -27,6 +29,8 @@ class ExceptionNotifier
     Notifier.default_normalize_subject    = @options[:normalize_subject]
     Notifier.default_smtp_settings        = @options[:smtp_settings]
 
+    @campfire = CampfireNotifier.new @options[:campfire]
+
     @options[:ignore_exceptions] ||= self.class.default_ignore_exceptions
     @options[:ignore_crawlers]   ||= self.class.default_ignore_crawlers
     @options[:ignore_if]         ||= lambda { |env, e| false }
@@ -41,8 +45,8 @@ class ExceptionNotifier
     unless ignored_exception(options[:ignore_exceptions], exception)       ||
            from_crawler(options[:ignore_crawlers], env['HTTP_USER_AGENT']) ||
            conditionally_ignored(options[:ignore_if], env, exception)
-      mail = Notifier.exception_notification(env, exception)
-      mail.deliver
+      Notifier.exception_notification(env, exception).deliver
+      @campfire.exception_notification(exception)
       env['exception_notifier.delivered'] = true
     end
 

@@ -1,6 +1,7 @@
-== 2.6.2
+== 2.7.0
 
 * enhancements
+  * Campfire integration
   * Support fot HTML notifications (by @Xenofex)
 
 * bug fixes
