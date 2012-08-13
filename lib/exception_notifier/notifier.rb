@@ -104,7 +104,7 @@ class ExceptionNotifier
         @sections  = @options[:background_sections]
         @data      = options[:data] || {}
 
-        compose_email.deliver
+        compose_email
       end
     end
 

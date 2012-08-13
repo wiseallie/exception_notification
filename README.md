@@ -217,7 +217,7 @@ like this:
 begin
   some code...
 rescue => e
-  ExceptionNotifier::Notifier.background_exception_notification(e)
+  ExceptionNotifier::Notifier.background_exception_notification(e).deliver
 end
 ```
 
@@ -229,7 +229,7 @@ begin
   some code...
 rescue => exception
   ExceptionNotifier::Notifier.background_exception_notification(exception,
-    :data => {:worker => worker.to_s, :queue => queue, :payload => payload})
+    :data => {:worker => worker.to_s, :queue => queue, :payload => payload}).deliver
 end
 ```
 
