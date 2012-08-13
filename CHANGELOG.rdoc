@@ -3,9 +3,11 @@
 * enhancements
   * Campfire integration
   * Support fot HTML notifications (by @Xenofex)
+  * Be able to override SMTP settings (by @piglop and @Macint)
 
 * bug fixes
   * Allow default sections to be overridden (by @jfarmer)
+  * Don't automatically deliver background notifications
 
 == 2.6.1
 
