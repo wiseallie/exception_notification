@@ -277,7 +277,7 @@ Whatever::Application.config.middleware.use ExceptionNotifier,
 Versions
 ---
 
-NOTE: Master branch is currently set for v2.7.0
+NOTE: Master branch is currently set for v3.0.0
 
 For v2.6.1, see this tag:
 
