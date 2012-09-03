@@ -9,5 +9,7 @@
           title = render("title", :title => section).strip
           "#{title}\n\n#{summary.gsub(/^/, "  ")}\n\n"
         end
-      end %>
-  <%= raw sections.join %>
+      end.join
+      sections = sections.force_encoding('UTF-8').encode('UTF-16', :invalid => :replace).encode('UTF-8') if sections.respond_to?(:force_encoding)
+  %>
+  <%= raw sections %>

@@ -18,7 +18,8 @@
 
         [title, summary.gsub(/^/, "  "), nil].join("\n\n")
       end
-    end
+    end.join
+    sections = sections.force_encoding('UTF-8').encode('UTF-16', :invalid => :replace).encode('UTF-8') if sections.respond_to?(:force_encoding)
 %>
 
-<%= raw sections.join %>
+<%= raw sections %>
