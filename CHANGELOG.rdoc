@@ -1,4 +1,4 @@
-== 2.7.0
+== 3.0.0
 
 * enhancements
   * Campfire integration
@@ -6,6 +6,7 @@
   * Be able to override SMTP settings (by @piglop and @Macint)
 
 * bug fixes
+  * Fix encoding issues
   * Allow default sections to be overridden (by @jfarmer)
   * Don't automatically deliver background notifications
 
