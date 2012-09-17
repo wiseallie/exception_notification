@@ -309,6 +309,9 @@ If you are running pre-rack Rails then see this tag:
 Support and tickets
 ---
 
-<a href="https://github.com/smartinez87/exception_notification/issues">https://github.com/smartinez87/exception_notification/issues</a>
+Here's the list of [issues](https://github.com/smartinez87/exception_notification/issues) we're currently working on.
+
+To contribute, please read first the [Contributing
+Guide](https://github.com/smartinez87/exception_notification/blob/master/CONTRIBUTING.md).
 
 Copyright (c) 2005 Jamis Buck, released under the MIT license: <a href="http://www.opensource.org/licenses/MIT">http://www.opensource.org/licenses/MIT</a>
