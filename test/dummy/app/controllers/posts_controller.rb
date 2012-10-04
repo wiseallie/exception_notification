@@ -13,6 +13,7 @@ class PostsController < ApplicationController
   # POST /posts
   # POST /posts.xml
   def create
+    @sections = Object.new
     # Have this line raise an exception
     @post = Post.nw(params[:post])
 
