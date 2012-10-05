@@ -35,11 +35,11 @@ Whatever::Application.config.middleware.use ExceptionNotifier,
   :exception_recipients => %w{exceptions@example.com}
 ```
 
-Notifiers
+Campfire Integration
 ---
 
-Additionally, ExceptionNotification supports Campfire integration, so
-you can send alerts to your Campfire room.
+Additionally, ExceptionNotification supports sending notifications to
+your Campfire room.
 To configure it, you need to set the subdomain, token and room name,
 like this
 
