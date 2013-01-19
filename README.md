@@ -200,6 +200,20 @@ Whatever::Application.config.middleware.use ExceptionNotifier,
 You can make use of both the environment and the exception inside the lambda to decide wether to
 avoid or not sending the notification.
 
+### Headers
+
+Additionally, you may want to set customized headers on the outcoming
+emails. To do so, simply use the _:email_headers_ option:
+
+```ruby
+Whatever::Application.config.middleware.use ExceptionNotifier,
+  :email_prefix         => "[Whatever] ",
+  :sender_address       => %{"notifier" <notifier@example.com>},
+  :exception_recipients => %w{exceptions@example.com},
+  :ignore_if            => lambda { |env, e| e.message =~ /^Couldn't find Page with ID=/ },
+  :email_headers        => { "X-Custom-Header" => "foobar" }
+```
+
 ### Verbose
 
 You can also choose to exclude the exception message from the subject, which is included by default.
