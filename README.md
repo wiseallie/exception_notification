@@ -45,7 +45,7 @@ First you'll need to add [tinder](https://github.com/collectiveidea/tinder)
 to your `Gemfile`:
 
 ```ruby
-gem 'tinder', '~> 1.8'
+gem 'tinder'
 ```
 
 To configure it, you need to set the subdomain, token and room name,
