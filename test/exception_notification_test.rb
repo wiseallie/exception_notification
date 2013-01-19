@@ -18,7 +18,7 @@ class ExceptionNotificationTest < ActiveSupport::TestCase
   end
 
   test "should have default email headers overridden" do
-    asset ExceptionNotifier::Notifier.default_email_headers == { "X-Custom-Header" => "foobar"}
+    assert ExceptionNotifier::Notifier.default_email_headers == { "X-Custom-Header" => "foobar"}
   end
 
   test "should have default sections" do

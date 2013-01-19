@@ -60,7 +60,7 @@ class PostsControllerTest < ActionController::TestCase
   end
 
   test "mail should contain the custom header" do
-    assert @mail.headers["X-Custom-Header"] == "foobar"
+    assert @mail.encoded.include? 'X-Custom-Header: foobar'
   end
 
   test "mail should not contain any attachments" do
