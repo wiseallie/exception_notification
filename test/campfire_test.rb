@@ -1,4 +1,5 @@
 require 'test_helper'
+require 'tinder'
 
 class CampfireNotifierTest < ActiveSupport::TestCase
 

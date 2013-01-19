@@ -31,8 +31,4 @@ class ExceptionNotifier
   end
 end
 
-begin
-  require 'tinder'
-rescue LoadError
-  ExceptionNotifier::CampfireNotifier.tinder_available = false
-end
+ExceptionNotifier::CampfireNotifier.tinder_available = Gem.loaded_specs.keys.include? 'tinder'
