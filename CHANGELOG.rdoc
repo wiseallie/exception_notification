@@ -4,6 +4,9 @@
   * Custom Headers (by @DouweM)
   * Make Tinder a soft-dependency (by @fgrehm)
 
+* bug fixes
+  * Fix `code converter not found` (by @alanjds)
+
 == 3.0.0
 
 * enhancements
