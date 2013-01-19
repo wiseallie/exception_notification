@@ -1,3 +1,9 @@
+== 3.0.1
+
+* enhancements
+  * Custom Headers (by @DouweM)
+  * Make Tinder a soft-dependency (by @fgrehm)
+
 == 3.0.0
 
 * enhancements
