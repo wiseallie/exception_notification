@@ -6,24 +6,24 @@ class ExceptionNotificationTest < ActiveSupport::TestCase
   end
 
   test "should have default sender address overridden" do
-    assert ExceptionNotifier::Notifier.default_sender_address == %("Dummy Notifier" <dummynotifier@example.com>)
+    assert ExceptionNotifier::EmailNotifier.default_sender_address == %("Dummy Notifier" <dummynotifier@example.com>)
   end
 
   test "should have default email prefix overridden" do
-    assert ExceptionNotifier::Notifier.default_email_prefix == "[Dummy ERROR] "
+    assert ExceptionNotifier::EmailNotifier.default_email_prefix == "[Dummy ERROR] "
   end
 
   test "should have default email format overridden" do
-    assert ExceptionNotifier::Notifier.default_email_format == :text
+    assert ExceptionNotifier::EmailNotifier.default_email_format == :text
   end
 
   test "should have default email headers overridden" do
-    assert ExceptionNotifier::Notifier.default_email_headers == { "X-Custom-Header" => "foobar"}
+    assert ExceptionNotifier::EmailNotifier.default_email_headers == { "X-Custom-Header" => "foobar"}
   end
 
   test "should have default sections" do
     for section in %w(request session environment backtrace)
-      assert ExceptionNotifier::Notifier.default_sections.include? section
+      assert ExceptionNotifier::EmailNotifier.default_sections.include? section
     end
   end
 
@@ -38,7 +38,7 @@ class ExceptionNotificationTest < ActiveSupport::TestCase
 
       File.open(section_partial, 'w+') { |f| f.puts test_string }
 
-      assert ExceptionNotifier::Notifier.exception_notification(env, exception, options).body =~ /#{test_string}/
+      assert ExceptionNotifier::EmailNotifier.exception_notification(env, exception, options).body =~ /#{test_string}/
     ensure
       File.delete section_partial
     end
@@ -46,12 +46,12 @@ class ExceptionNotificationTest < ActiveSupport::TestCase
 
   test "should have default background sections" do
     for section in %w(backtrace data)
-      assert ExceptionNotifier::Notifier.default_background_sections.include? section
+      assert ExceptionNotifier::EmailNotifier.default_background_sections.include? section
     end
   end
 
   test "should have verbose subject by default" do
-    assert ExceptionNotifier::Notifier.default_options[:verbose_subject] == true
+    assert ExceptionNotifier::EmailNotifier.default_options[:verbose_subject] == true
   end
 
   test "should have ignored crawler by default" do
@@ -60,14 +60,14 @@ class ExceptionNotificationTest < ActiveSupport::TestCase
 
   test "should normalize multiple digits into one N" do
     assert_equal 'N foo N bar N baz N',
-      ExceptionNotifier::Notifier.normalize_digits('1 foo 12 bar 123 baz 1234')
+      ExceptionNotifier::EmailNotifier.normalize_digits('1 foo 12 bar 123 baz 1234')
   end
 
   test "should have normalize_subject false by default" do
-    assert ExceptionNotifier::Notifier.default_options[:normalize_subject] == false
+    assert ExceptionNotifier::EmailNotifier.default_options[:normalize_subject] == false
   end
   
   test "should have smtp_settings nil by default" do
-    assert ExceptionNotifier::Notifier.default_options[:smtp_settings] == nil
+    assert ExceptionNotifier::EmailNotifier.default_options[:smtp_settings] == nil
   end
 end

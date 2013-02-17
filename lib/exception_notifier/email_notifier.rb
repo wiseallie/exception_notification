@@ -2,7 +2,7 @@ require 'action_mailer'
 require 'pp'
 
 class ExceptionNotifier
-  class Notifier < ActionMailer::Base
+  class EmailNotifier < ActionMailer::Base
     self.mailer_name = 'exception_notifier'
 
     #Append application view path to the ExceptionNotifier lookup context.

@@ -1,5 +1,5 @@
 require 'action_dispatch'
-require 'exception_notifier/notifier'
+require 'exception_notifier/email_notifier'
 require 'exception_notifier/campfire_notifier'
 
 class ExceptionNotifier
@@ -19,16 +19,16 @@ class ExceptionNotifier
   def initialize(app, options = {})
     @app, @options = app, options
 
-    Notifier.default_sender_address       = @options[:sender_address]
-    Notifier.default_exception_recipients = @options[:exception_recipients]
-    Notifier.default_email_prefix         = @options[:email_prefix]
-    Notifier.default_email_format         = @options[:email_format]
-    Notifier.default_sections             = @options[:sections]
-    Notifier.default_background_sections  = @options[:background_sections]
-    Notifier.default_verbose_subject      = @options[:verbose_subject]
-    Notifier.default_normalize_subject    = @options[:normalize_subject]
-    Notifier.default_smtp_settings        = @options[:smtp_settings]
-    Notifier.default_email_headers        = @options[:email_headers]
+    EmailNotifier.default_sender_address       = @options[:sender_address]
+    EmailNotifier.default_exception_recipients = @options[:exception_recipients]
+    EmailNotifier.default_email_prefix         = @options[:email_prefix]
+    EmailNotifier.default_email_format         = @options[:email_format]
+    EmailNotifier.default_sections             = @options[:sections]
+    EmailNotifier.default_background_sections  = @options[:background_sections]
+    EmailNotifier.default_verbose_subject      = @options[:verbose_subject]
+    EmailNotifier.default_normalize_subject    = @options[:normalize_subject]
+    EmailNotifier.default_smtp_settings        = @options[:smtp_settings]
+    EmailNotifier.default_email_headers        = @options[:email_headers]
 
     @campfire = CampfireNotifier.new @options[:campfire]
 
@@ -40,13 +40,13 @@ class ExceptionNotifier
   def call(env)
     @app.call(env)
   rescue Exception => exception
-    options = (env['exception_notifier.options'] ||= Notifier.default_options)
+    options = (env['exception_notifier.options'] ||= EmailNotifier.default_options)
     options.reverse_merge!(@options)
 
     unless ignored_exception(options[:ignore_exceptions], exception)       ||
            from_crawler(options[:ignore_crawlers], env['HTTP_USER_AGENT']) ||
            conditionally_ignored(options[:ignore_if], env, exception)
-      Notifier.exception_notification(env, exception).deliver
+      EmailNotifier.exception_notification(env, exception).deliver
       @campfire.exception_notification(exception)
       env['exception_notifier.delivered'] = true
     end

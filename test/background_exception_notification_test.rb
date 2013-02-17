@@ -7,7 +7,7 @@ class BackgroundExceptionNotificationTest < ActiveSupport::TestCase
     rescue => e
       @exception = e
       @time = Time.current
-      @mail = ExceptionNotifier::Notifier.background_exception_notification(@exception,
+      @mail = ExceptionNotifier::EmailNotifier.background_exception_notification(@exception,
         :data => {:job => 'DivideWorkerJob', :payload => '1/0', :message => 'My Custom Message'})
     end
   end
@@ -45,7 +45,7 @@ class BackgroundExceptionNotificationTest < ActiveSupport::TestCase
       raise ActiveRecord::RecordNotFound
     rescue => e
       @vowel_exception = e
-      @vowel_mail = ExceptionNotifier::Notifier.background_exception_notification(@vowel_exception)
+      @vowel_mail = ExceptionNotifier::EmailNotifier.background_exception_notification(@vowel_exception)
     end
 
     assert @vowel_mail.encoded.include? "An ActiveRecord::RecordNotFound occurred in background at #{@time}"
@@ -72,7 +72,7 @@ class BackgroundExceptionNotificationTest < ActiveSupport::TestCase
     rescue => e
       @ignored_exception = e
       unless ExceptionNotifier.default_ignore_exceptions.include?(@ignored_exception.class.name)
-        @ignored_mail = ExceptionNotifier::Notifier.background_exception_notification(@ignored_exception)
+        @ignored_mail = ExceptionNotifier::EmailNotifier.background_exception_notification(@ignored_exception)
       end
     end
 
