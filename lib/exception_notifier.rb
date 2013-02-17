@@ -17,24 +17,25 @@ class ExceptionNotifier
   end
 
   def initialize(app, options = {})
-    @app, @options = app, options
+    @app = app
 
-    EmailNotifier.default_sender_address       = @options[:sender_address]
-    EmailNotifier.default_exception_recipients = @options[:exception_recipients]
-    EmailNotifier.default_email_prefix         = @options[:email_prefix]
-    EmailNotifier.default_email_format         = @options[:email_format]
-    EmailNotifier.default_sections             = @options[:sections]
-    EmailNotifier.default_background_sections  = @options[:background_sections]
-    EmailNotifier.default_verbose_subject      = @options[:verbose_subject]
-    EmailNotifier.default_normalize_subject    = @options[:normalize_subject]
-    EmailNotifier.default_smtp_settings        = @options[:smtp_settings]
-    EmailNotifier.default_email_headers        = @options[:email_headers]
+    EmailNotifier.default_sender_address       = options[:sender_address]
+    EmailNotifier.default_exception_recipients = options[:exception_recipients]
+    EmailNotifier.default_email_prefix         = options[:email_prefix]
+    EmailNotifier.default_email_format         = options[:email_format]
+    EmailNotifier.default_sections             = options[:sections]
+    EmailNotifier.default_background_sections  = options[:background_sections]
+    EmailNotifier.default_verbose_subject      = options[:verbose_subject]
+    EmailNotifier.default_normalize_subject    = options[:normalize_subject]
+    EmailNotifier.default_smtp_settings        = options[:smtp_settings]
+    EmailNotifier.default_email_headers        = options[:email_headers]
 
-    @campfire = CampfireNotifier.new @options[:campfire]
+    @campfire = CampfireNotifier.new options[:campfire]
 
-    @options[:ignore_exceptions] ||= self.class.default_ignore_exceptions
-    @options[:ignore_crawlers]   ||= self.class.default_ignore_crawlers
-    @options[:ignore_if]         ||= lambda { |env, e| false }
+    @options = {}
+    @options[:ignore_exceptions] = options.delete(:ignore_exceptions) || self.class.default_ignore_exceptions
+    @options[:ignore_crawlers]   = options.delete(:ignore_crawlers) || self.class.default_ignore_crawlers
+    @options[:ignore_if]         = options.delete(:ignore_if) || lambda { |env, e| false }
   end
 
   def call(env)
