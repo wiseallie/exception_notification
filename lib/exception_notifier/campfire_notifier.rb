@@ -1,6 +1,6 @@
 class ExceptionNotifier
   class CampfireNotifier
-    cattr_accessor :tinder_available do true end
+    cattr_accessor :tinder_available
 
     attr_accessor :subdomain
     attr_accessor :token
