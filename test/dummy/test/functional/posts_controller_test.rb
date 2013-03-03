@@ -7,7 +7,7 @@ class PostsControllerTest < ActionController::TestCase
       post :create, :post => @post.attributes
     rescue => e
       @exception = e
-      @mail = ExceptionNotifier::EmailNotifier.exception_notification(request.env, @exception, {:data => {:message => 'My Custom Message'}})
+      @mail = ExceptionNotifier::EmailNotifier::Mailer.exception_notification(request.env, @exception, {:data => {:message => 'My Custom Message'}})
     end
   end
 
@@ -73,7 +73,7 @@ class PostsControllerTest < ActionController::TestCase
     rescue => e
       @ignored_exception = e
       unless ExceptionNotifier.default_ignore_exceptions.include?(@ignored_exception.class.name)
-        @ignored_mail = ExceptionNotifier::EmailNotifier.exception_notification(request.env, @ignored_exception)
+        @ignored_mail = ExceptionNotifier::EmailNotifier::Mailer.exception_notification(request.env, @ignored_exception)
       end
     end
 
@@ -87,7 +87,7 @@ class PostsControllerTest < ActionController::TestCase
       @post = posts(:one)
       post :create, :post => @post.attributes
     rescue => e
-      @secured_mail = ExceptionNotifier::EmailNotifier.exception_notification(request.env, e)
+      @secured_mail = ExceptionNotifier::EmailNotifier::Mailer.exception_notification(request.env, e)
     end
 
     assert request.ssl?
@@ -106,7 +106,7 @@ class PostsControllerTest < ActionController::TestCase
       custom_env['exception_notifier.options'].merge!(:ignore_crawlers => %w(Googlebot))
       ignore_array = custom_env['exception_notifier.options'][:ignore_crawlers]
       unless ExceptionNotifier.new(Dummy::Application, custom_env['exception_notifier.options']).send(:from_crawler, ignore_array, custom_env['HTTP_USER_AGENT'])
-        @ignored_mail = ExceptionNotifier::EmailNotifier.exception_notification(custom_env, @exception)
+        @ignored_mail = ExceptionNotifier::EmailNotifier::Mailer.exception_notification(custom_env, @exception)
       end
     end
 
@@ -125,7 +125,7 @@ class PostsControllerTest < ActionController::TestCase
       ignore_cond = {:ignore_if => lambda {|env, e| (env['IGNOREME'] == 'IGNOREME') && (e.message =~ /undefined method/)}}
       custom_env['exception_notifier.options'].merge!(ignore_cond)
       unless ExceptionNotifier.new(Dummy::Application, custom_env['exception_notifier.options']).send(:conditionally_ignored, ignore_cond[:ignore_if], custom_env, @exception)
-        @ignored_mail = ExceptionNotifier::EmailNotifier.exception_notification(custom_env, @exception)
+        @ignored_mail = ExceptionNotifier::EmailNotifier::Mailer.exception_notification(custom_env, @exception)
       end
     end
 
@@ -141,7 +141,7 @@ class PostsControllerTest < ActionController::TestCase
       custom_env = request.env
       custom_env['exception_notifier.options'] ||= {}
       custom_env['exception_notifier.options'].merge!({:email_format => :html})
-      @mail = ExceptionNotifier::EmailNotifier.exception_notification(custom_env, @exception)
+      @mail = ExceptionNotifier::EmailNotifier::Mailer.exception_notification(custom_env, @exception)
     end
 
     assert @mail.content_type.include? "multipart/alternative"
@@ -157,7 +157,7 @@ class PostsControllerTestWithoutVerboseSubject < ActionController::TestCase
       post :create, :post => @post.attributes
     rescue => e
       @exception = e
-      @mail = ExceptionNotifier::EmailNotifier.exception_notification(request.env, @exception)
+      @mail = ExceptionNotifier::EmailNotifier::Mailer.exception_notification(request.env, @exception)
     end
   end
 
@@ -179,7 +179,7 @@ class PostsControllerTestWithSmtpSettings < ActionController::TestCase
       post :create, :post => @post.attributes
     rescue => e
       @exception = e
-      @mail = ExceptionNotifier::EmailNotifier.exception_notification(request.env, @exception)
+      @mail = ExceptionNotifier::EmailNotifier::Mailer.exception_notification(request.env, @exception)
     end
   end
 
@@ -189,7 +189,7 @@ class PostsControllerTestWithSmtpSettings < ActionController::TestCase
   end
   
   test "should have overridden smtp settings with background notification" do
-    @mail = ExceptionNotifier::EmailNotifier.background_exception_notification(@exception)
+    @mail = ExceptionNotifier::EmailNotifier::Mailer.background_exception_notification(@exception)
     assert_equal "Dummy user_name", @mail.delivery_method.settings[:user_name]
     assert_equal "Dummy password", @mail.delivery_method.settings[:password]
   end
@@ -213,7 +213,7 @@ class PostsControllerTestBadRequestData < ActionController::TestCase
       post :create, :post => @post.attributes
     rescue => e
       @exception = e
-      @mail = ExceptionNotifier::EmailNotifier.exception_notification(request.env, @exception)
+      @mail = ExceptionNotifier::EmailNotifier::Mailer.exception_notification(request.env, @exception)
     end
   end
 
@@ -229,7 +229,7 @@ class PostsControllerTestBackgroundNotification < ActionController::TestCase
       @post = posts(:one)
       post :create, :post => @post.attributes
     rescue => exception
-      @mail = ExceptionNotifier::EmailNotifier.background_exception_notification(exception)
+      @mail = ExceptionNotifier::EmailNotifier::Mailer.background_exception_notification(exception)
     end
   end
 

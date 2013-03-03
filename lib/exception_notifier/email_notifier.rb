@@ -2,11 +2,7 @@ require 'action_mailer'
 require 'pp'
 
 class ExceptionNotifier
-  class EmailNotifier < ActionMailer::Base
-    self.mailer_name = 'exception_notifier'
-
-    #Append application view path to the ExceptionNotifier lookup context.
-    self.append_view_path "#{File.dirname(__FILE__)}/views"
+  class EmailNotifier
 
     class << self
       attr_writer :default_sender_address
@@ -69,7 +65,7 @@ class ExceptionNotifier
           :background_sections => default_background_sections,
           :verbose_subject => default_verbose_subject,
           :normalize_subject => default_normalize_subject,
-          :template_path => mailer_name,
+          :template_path => Mailer.mailer_name,
           :smtp_settings => default_smtp_settings,
           :email_headers => default_email_headers }
       end
@@ -79,107 +75,114 @@ class ExceptionNotifier
       end
     end
 
-    class MissingController
-      def method_missing(*args, &block)
+    class Mailer < ActionMailer::Base
+      self.mailer_name = 'exception_notifier'
+
+      #Append application view path to the ExceptionNotifier lookup context.
+      self.append_view_path "#{File.dirname(__FILE__)}/views"
+
+      class MissingController
+        def method_missing(*args, &block)
+        end
       end
-    end
 
-    def exception_notification(env, exception, options={})
-      load_custom_views
+      def exception_notification(env, exception, options={})
+        load_custom_views
 
-      @env        = env
-      @exception  = exception
-      @options    = options.reverse_merge(env['exception_notifier.options'] || {}).reverse_merge(self.class.default_options)
-      @kontroller = env['action_controller.instance'] || MissingController.new
-      @request    = ActionDispatch::Request.new(env)
-      @backtrace  = exception.backtrace ? clean_backtrace(exception) : []
-      @sections   = @options[:sections]
-      @data       = (env['exception_notifier.exception_data'] || {}).merge(options[:data] || {})
-      @sections   = @sections + %w(data) unless @data.empty?
-      
-      compose_email
-    end
-
-    def background_exception_notification(exception, options={})
-      load_custom_views
-
-      if @notifier = Rails.application.config.middleware.detect{ |x| x.klass == ExceptionNotifier }
-        @options   = options.reverse_merge(@notifier.args.first || {}).reverse_merge(self.class.default_options)
-        @exception = exception
-        @backtrace = exception.backtrace || []
-        @sections  = @options[:background_sections]
-        @data      = options[:data] || {}
+        @env        = env
+        @exception  = exception
+        @options    = options.reverse_merge(env['exception_notifier.options'] || {}).reverse_merge(EmailNotifier.default_options)
+        @kontroller = env['action_controller.instance'] || MissingController.new
+        @request    = ActionDispatch::Request.new(env)
+        @backtrace  = exception.backtrace ? clean_backtrace(exception) : []
+        @sections   = @options[:sections]
+        @data       = (env['exception_notifier.exception_data'] || {}).merge(options[:data] || {})
+        @sections   = @sections + %w(data) unless @data.empty?
 
         compose_email
       end
-    end
 
-    private
+      def background_exception_notification(exception, options={})
+        load_custom_views
 
-    def compose_subject
-      subject = "#{@options[:email_prefix]}"
-      subject << "#{@kontroller.controller_name}##{@kontroller.action_name}" if @kontroller
-      subject << " (#{@exception.class})"
-      subject << " #{@exception.message.inspect}" if @options[:verbose_subject]
-      subject = normalize_digits(subject) if @options[:normalize_subject]
-      subject.length > 120 ? subject[0...120] + "..." : subject
-    end
+        if @notifier = Rails.application.config.middleware.detect{ |x| x.klass == ExceptionNotifier }
+          @options   = options.reverse_merge(@notifier.args.first || {}).reverse_merge(EmailNotifier.default_options)
+          @exception = exception
+          @backtrace = exception.backtrace || []
+          @sections  = @options[:background_sections]
+          @data      = options[:data] || {}
 
-    def set_data_variables
-      @data.each do |name, value|
-        instance_variable_set("@#{name}", value)
+          compose_email
+        end
       end
-    end
 
-    def clean_backtrace(exception)
-      if Rails.respond_to?(:backtrace_cleaner)
-       Rails.backtrace_cleaner.send(:filter, exception.backtrace)
-      else
-       exception.backtrace
+      private
+
+      def compose_subject
+        subject = "#{@options[:email_prefix]}"
+        subject << "#{@kontroller.controller_name}##{@kontroller.action_name}" if @kontroller
+        subject << " (#{@exception.class})"
+        subject << " #{@exception.message.inspect}" if @options[:verbose_subject]
+        subject = normalize_digits(subject) if @options[:normalize_subject]
+        subject.length > 120 ? subject[0...120] + "..." : subject
       end
-    end
 
-    helper_method :inspect_object
-
-    def inspect_object(object)
-      case object
-      when Hash, Array
-        object.inspect
-      when ActionController::Base
-        "#{object.controller_name}##{object.action_name}"
-      else
-        object.to_s
+      def set_data_variables
+        @data.each do |name, value|
+          instance_variable_set("@#{name}", value)
+        end
       end
-    end
 
-    def html_mail?
-      @options[:email_format] == :html
-    end
-
-    def compose_email
-      set_data_variables
-      subject = compose_subject
-      name = @env.nil? ? 'background_exception_notification' : 'exception_notification'
-
-      headers = {
-        :to => @options[:exception_recipients], 
-        :from => @options[:sender_address],
-        :subject => subject, 
-        :template_name => name
-      }.merge(@options[:email_headers])
-
-      mail = mail(headers) do |format|
-        format.text
-        format.html if html_mail?
+      def clean_backtrace(exception)
+        if Rails.respond_to?(:backtrace_cleaner)
+        Rails.backtrace_cleaner.send(:filter, exception.backtrace)
+        else
+        exception.backtrace
+        end
       end
-      
-      mail.delivery_method.settings.merge!(@options[:smtp_settings]) if @options[:smtp_settings]
-      
-      mail
-    end
 
-    def load_custom_views
-      self.prepend_view_path Rails.root.nil? ? "app/views" : "#{Rails.root}/app/views" if defined?(Rails)
+      helper_method :inspect_object
+
+      def inspect_object(object)
+        case object
+        when Hash, Array
+          object.inspect
+        when ActionController::Base
+          "#{object.controller_name}##{object.action_name}"
+        else
+          object.to_s
+        end
+      end
+
+      def html_mail?
+        @options[:email_format] == :html
+      end
+
+      def compose_email
+        set_data_variables
+        subject = compose_subject
+        name = @env.nil? ? 'background_exception_notification' : 'exception_notification'
+
+        headers = {
+          :to => @options[:exception_recipients],
+          :from => @options[:sender_address],
+          :subject => subject,
+          :template_name => name
+        }.merge(@options[:email_headers])
+
+        mail = mail(headers) do |format|
+          format.text
+          format.html if html_mail?
+        end
+
+        mail.delivery_method.settings.merge!(@options[:smtp_settings]) if @options[:smtp_settings]
+
+        mail
+      end
+
+      def load_custom_views
+        self.prepend_view_path Rails.root.nil? ? "app/views" : "#{Rails.root}/app/views" if defined?(Rails)
+      end
     end
   end
 end

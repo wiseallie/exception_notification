@@ -38,7 +38,7 @@ class ExceptionNotificationTest < ActiveSupport::TestCase
 
       File.open(section_partial, 'w+') { |f| f.puts test_string }
 
-      assert ExceptionNotifier::EmailNotifier.exception_notification(env, exception, options).body =~ /#{test_string}/
+      assert ExceptionNotifier::EmailNotifier::Mailer.exception_notification(env, exception, options).body =~ /#{test_string}/
     ensure
       File.delete section_partial
     end

@@ -38,8 +38,7 @@ class ExceptionNotifier
   def call(env)
     @app.call(env)
   rescue Exception => exception
-    options = (env['exception_notifier.options'] ||= EmailNotifier.default_options)
-    options.reverse_merge!(@options)
+    options = @options.dup
 
     unless ignored_exception(options[:ignore_exceptions], exception)       ||
            from_crawler(options[:ignore_crawlers], env['HTTP_USER_AGENT']) ||
