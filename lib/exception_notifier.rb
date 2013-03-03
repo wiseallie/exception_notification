@@ -1,6 +1,5 @@
 require 'action_dispatch'
 require 'exception_notifier/email_notifier'
-require 'exception_notifier/campfire_notifier'
 
 class ExceptionNotifier
 
@@ -30,8 +29,6 @@ class ExceptionNotifier
     EmailNotifier.default_smtp_settings        = options[:smtp_settings]
     EmailNotifier.default_email_headers        = options[:email_headers]
 
-    @campfire = CampfireNotifier.new options[:campfire]
-
     @options = {}
     @options[:ignore_exceptions] = options.delete(:ignore_exceptions) || self.class.default_ignore_exceptions
     @options[:ignore_crawlers]   = options.delete(:ignore_crawlers) || self.class.default_ignore_crawlers
@@ -48,7 +45,6 @@ class ExceptionNotifier
            from_crawler(options[:ignore_crawlers], env['HTTP_USER_AGENT']) ||
            conditionally_ignored(options[:ignore_if], env, exception)
       EmailNotifier.exception_notification(env, exception).deliver
-      @campfire.exception_notification(exception)
       env['exception_notifier.delivered'] = true
     end
 
