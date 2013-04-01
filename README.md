@@ -37,6 +37,40 @@ Whatever::Application.config.middleware.use ExceptionNotifier,
   }
 ```
 
+Campfire Integration
+---
+
+Additionally, ExceptionNotification supports sending notifications to
+your Campfire room.
+
+First you'll need to add [tinder](https://github.com/collectiveidea/tinder)
+to your `Gemfile`:
+
+```ruby
+gem 'tinder'
+```````
+
+To configure it, you need to set the subdomain, token and room name,
+like this:
+
+```ruby
+Whatever::Application.config.middleware.use ExceptionNotifier,
+  :email => {
+    :email_prefix => "[Whatever] ",
+    :sender_address => %{"notifier" <notifier@example.com>},
+    :exception_recipients => %w{exceptions@example.com}
+  },
+  :campfire => {
+    :subdomain => 'my_subdomain',
+    :token => 'my_token',
+    :room_name => 'my_room'
+  }
+```````
+
+For more options to set Campfire, like _ssl_, check
+[here](https://github.com/collectiveidea/tinder/blob/master/lib/tinder/campfire.rb#L17).
+
+
 Customization
 ---
 
