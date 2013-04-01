@@ -37,7 +37,7 @@ Whatever::Application.config.middleware.use ExceptionNotifier,
   }
 ```
 
-Campfire Integration
+Campfire Notifier
 ---
 
 Additionally, ExceptionNotification supports sending notifications to
@@ -69,6 +69,70 @@ Whatever::Application.config.middleware.use ExceptionNotifier,
 
 For more options to set Campfire, like _ssl_, check
 [here](https://github.com/collectiveidea/tinder/blob/master/lib/tinder/campfire.rb#L17).
+
+
+Webhook Notifier
+---
+
+ExceptionNotifier also can ship notifications over HTTP protocol.
+
+For this, you'll need to add [HTTParty](https://github.com/jnunemaker/httparty)
+to your `Gemfile`:
+
+```ruby
+gem 'httparty'
+```````
+
+To configure it, you need to set the url like this:
+
+```ruby
+Whatever::Application.config.middleware.use ExceptionNotifier,
+  :email => {
+    :email_prefix => "[Whatever] ",
+    :sender_address => %{"notifier" <notifier@example.com>},
+    :exception_recipients => %w{exceptions@example.com}
+  },
+  :webhook => {
+    :url => 'http://domain.com:5555/hubot/path'
+  }
+```````
+
+By default, the WebhookNotifier will call the URLs using the POST method.
+But, you can change this using the `http_method` option.
+
+```ruby
+Whatever::Application.config.middleware.use ExceptionNotifier,
+  :email => {
+    :email_prefix => "[Whatever] ",
+    :sender_address => %{"notifier" <notifier@example.com>},
+    :exception_recipients => %w{exceptions@example.com}
+  },
+  :webhook => {
+    :url => 'http://domain.com:5555/hubot/path',
+    :http_method => :get
+  }
+```````
+
+Besides the `url` and `http_method` options, all the other options are passed directly to HTTParty.
+Thus, if the HTTP server requires authentication, you can include the following options:
+
+```ruby
+Whatever::Application.config.middleware.use ExceptionNotifier,
+  :email => {
+    :email_prefix => "[Whatever] ",
+    :sender_address => %{"notifier" <notifier@example.com>},
+    :exception_recipients => %w{exceptions@example.com}
+  },
+  :webhook => {
+    :url => 'http://domain.com:5555/hubot/path',
+    :basic_auth => {
+      :username => 'alice',
+      :password => 'password'
+    }
+  }
+```````
+
+For more HTTParty options, check out the [documentation](https://github.com/jnunemaker/httparty).
 
 
 Customization
