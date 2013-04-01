@@ -1,38 +1,66 @@
 require 'action_dispatch'
-require 'exception_notifier/email_notifier'
 
 class ExceptionNotifier
 
-  def self.default_ignore_exceptions
-    [].tap do |exceptions|
-      exceptions << 'ActiveRecord::RecordNotFound'
-      exceptions << 'AbstractController::ActionNotFound'
-      exceptions << 'ActionController::RoutingError'
-    end
-  end
+  autoload :EmailNotifier, 'exception_notifier/email_notifier'
 
-  def self.default_ignore_crawlers
-    []
+  class UndefinedNotifierError < StandardError; end
+
+  class << self
+    @@notifiers = {}
+
+    def default_ignore_exceptions
+      ['ActiveRecord::RecordNotFound', 'AbstractController::ActionNotFound', 'ActionController::RoutingError']
+    end
+
+    def default_ignore_crawlers
+      []
+    end
+
+    def notify_exception(exception, options={})
+      selected_notifiers = options.delete(:notifiers) || notifiers
+      [*selected_notifiers].each do |notifier|
+        fire_notification(notifier, exception, options)
+      end
+    end
+
+    def register_exception_notifier(name, notifier)
+      @@notifiers[name] = notifier
+    end
+
+    def unregister_exception_notifier(name)
+      @@notifiers.delete(name)
+    end
+
+    def registered_exception_notifier(name)
+      @@notifiers[name]
+    end
+
+    def notifiers
+      @@notifiers.keys
+    end
+
+    private
+    def fire_notification(notifier_name, exception, options)
+      notifier = registered_exception_notifier(notifier_name)
+      notifier.call(exception, options)
+    rescue
+      false
+    end
   end
 
   def initialize(app, options = {})
     @app = app
 
-    EmailNotifier.default_sender_address       = options[:sender_address]
-    EmailNotifier.default_exception_recipients = options[:exception_recipients]
-    EmailNotifier.default_email_prefix         = options[:email_prefix]
-    EmailNotifier.default_email_format         = options[:email_format]
-    EmailNotifier.default_sections             = options[:sections]
-    EmailNotifier.default_background_sections  = options[:background_sections]
-    EmailNotifier.default_verbose_subject      = options[:verbose_subject]
-    EmailNotifier.default_normalize_subject    = options[:normalize_subject]
-    EmailNotifier.default_smtp_settings        = options[:smtp_settings]
-    EmailNotifier.default_email_headers        = options[:email_headers]
-
     @options = {}
     @options[:ignore_exceptions] = options.delete(:ignore_exceptions) || self.class.default_ignore_exceptions
     @options[:ignore_crawlers]   = options.delete(:ignore_crawlers) || self.class.default_ignore_crawlers
     @options[:ignore_if]         = options.delete(:ignore_if) || lambda { |env, e| false }
+
+    options = make_options_backward_compatible(options)
+    options.each do |notifier_name, options|
+      create_and_register_notifier(notifier_name, options)
+    end
   end
 
   def call(env)
@@ -43,7 +71,7 @@ class ExceptionNotifier
     unless ignored_exception(options[:ignore_exceptions], exception)       ||
            from_crawler(options[:ignore_crawlers], env['HTTP_USER_AGENT']) ||
            conditionally_ignored(options[:ignore_if], env, exception)
-      EmailNotifier.exception_notification(env, exception).deliver
+      ExceptionNotifier.notify_exception(exception, options.reverse_merge(:env => env))
       env['exception_notifier.delivered'] = true
     end
 
@@ -65,7 +93,31 @@ class ExceptionNotifier
 
   def conditionally_ignored(ignore_proc, env, exception)
     ignore_proc.call(env, exception)
-  rescue Exception => ex
+  rescue Exception
     false
+  end
+
+  def create_and_register_notifier(name, options)
+    notifier_classname = "#{name}_notifier".camelize
+    notifier_class = ExceptionNotifier.const_get(notifier_classname)
+    notifier = notifier_class.new(options)
+    ExceptionNotifier.register_exception_notifier(name, notifier)
+  rescue NameError => e
+    raise UndefinedNotifierError, "No notifier named '#{name}' was found. Please, revise your configuration options. Cause: #{e.message}"
+  end
+
+  def make_options_backward_compatible(options)
+    email_options_names = [:sender_address, :exception_recipients,
+        :email_prefix, :email_format, :sections, :background_sections,
+        :verbose_subject, :normalize_subject, :smtp_settings, :email_headers]
+
+    if email_options_names.any?{|eo| options.has_key?(eo) }
+      ActiveSupport::Deprecation.warn "You are using an old configuration style for ExceptionNotifier middleware. Please, revise your configuration options later."
+      email_options = options.select{ |k,v| email_options_names.include?(k) }
+      options.reject!{ |k,v| email_options_names.include?(k) }
+      options[:email] = email_options
+    end
+
+    options
   end
 end

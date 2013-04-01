@@ -1,5 +1,5 @@
 PATH
-  remote: ../../..
+  remote: /
   specs:
     exception_notification (3.0.1)
       actionmailer (>= 3.0.4)

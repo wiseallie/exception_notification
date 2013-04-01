@@ -30,9 +30,11 @@ run on production. You can make it work by
 
 ```ruby
 Whatever::Application.config.middleware.use ExceptionNotifier,
-  :email_prefix => "[Whatever] ",
-  :sender_address => %{"notifier" <notifier@example.com>},
-  :exception_recipients => %w{exceptions@example.com}
+  :email => {
+    :email_prefix => "[Whatever] ",
+    :sender_address => %{"notifier" <notifier@example.com>},
+    :exception_recipients => %w{exceptions@example.com}
+  }
 ```
 
 Customization
@@ -65,10 +67,12 @@ describe application-specific data--just add the section's name to the list
 ```ruby
 #Example with two new added sections
 Whatever::Application.config.middleware.use ExceptionNotifier,
- :email_prefix => "[Whatever] ",
- :sender_address => %{"notifier" <notifier@example.com>},
- :exception_recipients => %w{exceptions@example.com},
- :sections => %w{my_section1 my_section2} + ExceptionNotifier::Notifier.default_sections
+  :email => {
+    :email_prefix => "[Whatever] ",
+    :sender_address => %{"notifier" <notifier@example.com>},
+    :exception_recipients => %w{exceptions@example.com},
+    :sections => %w{my_section1 my_section2} + ExceptionNotifier::Notifier.default_sections
+  }
 ```
 
 Place your custom sections under `./app/views/exception_notifier/` with the suffix `.text.erb`, e.g.
@@ -101,10 +105,12 @@ You may want to include different sections for background notifications:
 ```ruby
 #Example with two new added sections
 Whatever::Application.config.middleware.use ExceptionNotifier,
- :email_prefix => "[Whatever] ",
- :sender_address => %{"notifier" <notifier@example.com>},
- :exception_recipients => %w{exceptions@example.com},
- :background_sections => %w{my_section1 my_section2} + ExceptionNotifier::Notifier.default_background_sections
+  :email => {
+    :email_prefix => "[Whatever] ",
+    :sender_address => %{"notifier" <notifier@example.com>},
+    :exception_recipients => %w{exceptions@example.com},
+    :background_sections => %w{my_section1 my_section2} + ExceptionNotifier::Notifier.default_background_sections
+  }
 ```
 
 By default, the backtrace and data sections are included in background
@@ -131,10 +137,12 @@ To achieve that, you should use the _:ignore_exceptions_ option, like this:
 
 ```ruby
 Whatever::Application.config.middleware.use ExceptionNotifier,
-  :email_prefix         => "[Whatever] ",
-  :sender_address       => %{"notifier" <notifier@example.com>},
-  :exception_recipients => %w{exceptions@example.com},
-  :ignore_exceptions    => ['ActionView::TemplateError'] + ExceptionNotifier.default_ignore_exceptions
+  :ignore_exceptions => ['ActionView::TemplateError'] + ExceptionNotifier.default_ignore_exceptions,
+  :email => {
+    :email_prefix         => "[Whatever] ",
+    :sender_address       => %{"notifier" <notifier@example.com>},
+    :exception_recipients => %w{exceptions@example.com}
+  }
 ```
 
 The above will make ExceptionNotifier ignore a *TemplateError*
@@ -150,10 +158,12 @@ made by crawlers. Using _:ignore_crawlers_ option like this,
 
 ```ruby
 Whatever::Application.config.middleware.use ExceptionNotifier,
-  :email_prefix         => "[Whatever] ",
-  :sender_address       => %{"notifier" <notifier@example.com>},
-  :exception_recipients => %w{exceptions@example.com},
-  :ignore_crawlers      => %w{Googlebot bingbot}
+  :ignore_crawlers => %w{Googlebot bingbot},
+  :email => {
+    :email_prefix         => "[Whatever] ",
+    :sender_address       => %{"notifier" <notifier@example.com>},
+    :exception_recipients => %w{exceptions@example.com}
+  }
 ```
 
 will prevent sending those unwanted notifications.
@@ -164,10 +174,12 @@ Last but not least, you can ignore exceptions based on a condition, by
 
 ```ruby
 Whatever::Application.config.middleware.use ExceptionNotifier,
-  :email_prefix         => "[Whatever] ",
-  :sender_address       => %{"notifier" <notifier@example.com>},
-  :exception_recipients => %w{exceptions@example.com},
-  :ignore_if            => lambda { |env, e| e.message =~ /^Couldn't find Page with ID=/ }
+  :ignore_if => lambda { |env, e| e.message =~ /^Couldn't find Page with ID=/ },
+  :email => {
+    :email_prefix         => "[Whatever] ",
+    :sender_address       => %{"notifier" <notifier@example.com>},
+    :exception_recipients => %w{exceptions@example.com},
+  }
 ```
 
 You can make use of both the environment and the exception inside the lambda to decide wether to
@@ -180,11 +192,13 @@ emails. To do so, simply use the _:email_headers_ option:
 
 ```ruby
 Whatever::Application.config.middleware.use ExceptionNotifier,
-  :email_prefix         => "[Whatever] ",
-  :sender_address       => %{"notifier" <notifier@example.com>},
-  :exception_recipients => %w{exceptions@example.com},
-  :ignore_if            => lambda { |env, e| e.message =~ /^Couldn't find Page with ID=/ },
-  :email_headers        => { "X-Custom-Header" => "foobar" }
+  :ignore_if => lambda { |env, e| e.message =~ /^Couldn't find Page with ID=/ },
+  :email => {
+    :email_prefix         => "[Whatever] ",
+    :sender_address       => %{"notifier" <notifier@example.com>},
+    :exception_recipients => %w{exceptions@example.com},
+    :email_headers        => { "X-Custom-Header" => "foobar" }
+  }
 ```
 
 ### Verbose
@@ -208,14 +222,13 @@ Background Notifications
 ---
 
 If you want to send notifications from a background process like
-DelayedJob, you should use the background_exception_notification method
-like this:
+DelayedJob, you should use the `notify_exception` method like this:
 
 ```ruby
 begin
   some code...
 rescue => e
-  ExceptionNotifier::Notifier.background_exception_notification(e).deliver
+  ExceptionNotifier.notify_exception(e)
 end
 ```
 
@@ -226,8 +239,8 @@ the error by including a data parameter:
 begin
   some code...
 rescue => exception
-  ExceptionNotifier::Notifier.background_exception_notification(exception,
-    :data => {:worker => worker.to_s, :queue => queue, :payload => payload}).deliver
+  ExceptionNotifier.notify_exception(exception,
+    :data => {:worker => worker.to_s, :queue => queue, :payload => payload})
 end
 ```
 
@@ -244,8 +257,8 @@ rescue_from Exception, :with => :server_error
 def server_error(exception)
   # Whatever code that handles the exception
 
-  ExceptionNotifier::Notifier.exception_notification(request.env, exception,
-    :data => {:message => "was doing something wrong"}).deliver
+  ExceptionNotifier.notify_exception(exception,
+    :env => request.env, :data => {:message => "was doing something wrong"})
 end
 ```
 
@@ -263,12 +276,14 @@ You can use specific SMTP settings for notifications:
 
 ```ruby
 Whatever::Application.config.middleware.use ExceptionNotifier,
-  :email_prefix         => "[Whatever] ",
-  :sender_address       => %{"notifier" <notifier@example.com>},
-  :exception_recipients => %w{exceptions@example.com},
-  :smtp_settings => {
-    :user_name => "bob",
-    :password => "password",
+  :email => {
+    :email_prefix         => "[Whatever] ",
+    :sender_address       => %{"notifier" <notifier@example.com>},
+    :exception_recipients => %w{exceptions@example.com},
+    :smtp_settings => {
+      :user_name => "bob",
+      :password => "password",
+    }
   }
 ```
 

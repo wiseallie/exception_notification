@@ -2,7 +2,9 @@ require 'action_mailer'
 require 'pp'
 
 class ExceptionNotifier
-  class EmailNotifier
+  class EmailNotifier < Struct.new(:sender_address, :exception_recipients,
+    :email_prefix, :email_format, :sections, :background_sections,
+    :verbose_subject, :normalize_subject, :smtp_settings, :email_headers)
 
     class << self
       attr_writer :default_sender_address
@@ -78,7 +80,7 @@ class ExceptionNotifier
     class Mailer < ActionMailer::Base
       self.mailer_name = 'exception_notifier'
 
-      #Append application view path to the ExceptionNotifier lookup context.
+      # Append application view path to the ExceptionNotifier lookup context.
       self.append_view_path "#{File.dirname(__FILE__)}/views"
 
       class MissingController
@@ -86,12 +88,12 @@ class ExceptionNotifier
         end
       end
 
-      def exception_notification(env, exception, options={})
+      def exception_notification(env, exception, options={}, default_options={})
         load_custom_views
 
         @env        = env
         @exception  = exception
-        @options    = options.reverse_merge(env['exception_notifier.options'] || {}).reverse_merge(EmailNotifier.default_options)
+        @options    = options.reverse_merge(env['exception_notifier.options'] || {}).reverse_merge(default_options)
         @kontroller = env['action_controller.instance'] || MissingController.new
         @request    = ActionDispatch::Request.new(env)
         @backtrace  = exception.backtrace ? clean_backtrace(exception) : []
@@ -102,11 +104,11 @@ class ExceptionNotifier
         compose_email
       end
 
-      def background_exception_notification(exception, options={})
+      def background_exception_notification(exception, options={}, default_options={})
         load_custom_views
 
         if @notifier = Rails.application.config.middleware.detect{ |x| x.klass == ExceptionNotifier }
-          @options   = options.reverse_merge(@notifier.args.first || {}).reverse_merge(EmailNotifier.default_options)
+          @options   = options.reverse_merge(@notifier.args.first || {}).reverse_merge(default_options)
           @exception = exception
           @backtrace = exception.backtrace || []
           @sections  = @options[:background_sections]
@@ -182,6 +184,45 @@ class ExceptionNotifier
 
       def load_custom_views
         self.prepend_view_path Rails.root.nil? ? "app/views" : "#{Rails.root}/app/views" if defined?(Rails)
+      end
+    end
+
+    def initialize(options)
+      # here be dragons! grants backwards compatibility.
+      EmailNotifier.default_sender_address       = options[:sender_address]
+      EmailNotifier.default_exception_recipients = options[:exception_recipients]
+      EmailNotifier.default_email_prefix         = options[:email_prefix]
+      EmailNotifier.default_email_format         = options[:email_format]
+      EmailNotifier.default_sections             = options[:sections]
+      EmailNotifier.default_background_sections  = options[:background_sections]
+      EmailNotifier.default_verbose_subject      = options[:verbose_subject]
+      EmailNotifier.default_normalize_subject    = options[:normalize_subject]
+      EmailNotifier.default_smtp_settings        = options[:smtp_settings]
+      EmailNotifier.default_email_headers        = options[:email_headers]
+
+      super(*options.reverse_merge(EmailNotifier.default_options).values_at(
+        :sender_address, :exception_recipients,
+        :email_prefix, :email_format, :sections, :background_sections,
+        :verbose_subject, :normalize_subject, :smtp_settings, :email_headers))
+    end
+
+    def options
+      @options ||= {}.tap do |opts|
+        each_pair { |k,v| opts[k] = v }
+      end
+    end
+
+    def call(exception, options={})
+      create_email(exception, options).deliver
+    end
+
+    def create_email(exception, options={})
+      env = options.delete(:env)
+      default_options = self.options
+      if env.nil?
+        Mailer.background_exception_notification(exception, options, default_options)
+      else
+        Mailer.exception_notification(env, exception, options, default_options)
       end
     end
   end
