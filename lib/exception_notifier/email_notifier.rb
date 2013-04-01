@@ -125,7 +125,7 @@ class ExceptionNotifier
         subject << "#{@kontroller.controller_name}##{@kontroller.action_name}" if @kontroller
         subject << " (#{@exception.class})"
         subject << " #{@exception.message.inspect}" if @options[:verbose_subject]
-        subject = normalize_digits(subject) if @options[:normalize_subject]
+        subject = EmailNotifier.normalize_digits(subject) if @options[:normalize_subject]
         subject.length > 120 ? subject[0...120] + "..." : subject
       end
 
@@ -136,10 +136,10 @@ class ExceptionNotifier
       end
 
       def clean_backtrace(exception)
-        if Rails.respond_to?(:backtrace_cleaner)
-        Rails.backtrace_cleaner.send(:filter, exception.backtrace)
+        if defined?(Rails) && Rails.respond_to?(:backtrace_cleaner)
+          Rails.backtrace_cleaner.send(:filter, exception.backtrace)
         else
-        exception.backtrace
+          exception.backtrace
         end
       end
 
