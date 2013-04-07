@@ -1,5 +1,11 @@
-Exception Notifier Plugin for Rails ![project status](http://stillmaintained.com/smartinez87/exception_notification.png) [![Travis](http://travis-ci.org/smartinez87/exception_notification.png)](http://travis-ci.org/smartinez87/exception_notification) [![Code Climate](https://codeclimate.com/badge.png)](https://codeclimate.com/github/smartinez87/exception_notification)
+Exception Notifier Plugin for Rails
 ====
+
+[![Gem Version](https://fury-badge.herokuapp.com/rb/exception_notification.png)](http://badge.fury.io/rb/exception_notification)
+[![Travis](https://api.travis-ci.org/smartinez87/exception_notification.png)](http://travis-ci.org/smartinez87/exception_notification)
+[![Code Climate](https://codeclimate.com/github/smartinez87/exception_notification.png)](https://codeclimate.com/github/smartinez87/exception_notification)
+![project status](http://stillmaintained.com/smartinez87/exception_notification.png)
+
 
 The Exception Notifier plugin provides a mailer object and a default set of
 templates for sending email notifications when errors occur in a Rails
