@@ -1,3 +1,5 @@
+require 'active_support/deprecation'
+
 class ExceptionNotifier
   class Notifier
 

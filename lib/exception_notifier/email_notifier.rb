@@ -1,4 +1,5 @@
 require 'action_mailer'
+require 'action_dispatch'
 require 'pp'
 
 class ExceptionNotifier
@@ -107,15 +108,13 @@ class ExceptionNotifier
       def background_exception_notification(exception, options={}, default_options={})
         load_custom_views
 
-        if @notifier = Rails.application.config.middleware.detect{ |x| x.klass == ExceptionNotifier }
-          @options   = options.reverse_merge(@notifier.args.first || {}).reverse_merge(default_options)
-          @exception = exception
-          @backtrace = exception.backtrace || []
-          @sections  = @options[:background_sections]
-          @data      = options[:data] || {}
+        @exception = exception
+        @options   = options.reverse_merge(default_options)
+        @backtrace = exception.backtrace || []
+        @sections  = @options[:background_sections]
+        @data      = options[:data] || {}
 
-          compose_email
-        end
+        compose_email
       end
 
       private
@@ -149,8 +148,6 @@ class ExceptionNotifier
         case object
         when Hash, Array
           object.inspect
-        when ActionController::Base
-          "#{object.controller_name}##{object.action_name}"
         else
           object.to_s
         end
