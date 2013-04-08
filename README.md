@@ -428,14 +428,6 @@ For v2.6.1, see this tag:
 
 <a href="http://github.com/smartinez87/exception_notification/tree/v2.6.1">http://github.com/smartinez87/exception_notification/tree/v2.6.1</a>
 
-For v2.6.0, see this tag:
-
-<a href="http://github.com/smartinez87/exception_notification/tree/v2.6.0">http://github.com/smartinez87/exception_notification/tree/v2.6.0</a>
-
-For v2.5.2, see this tag:
-
-<a href="http://github.com/smartinez87/exception_notification/tree/v2.5.2">http://github.com/smartinez87/exception_notification/tree/v2.5.2</a>
-
 For previous releases, visit:
 
 <a href="https://github.com/smartinez87/exception_notification/tags">https://github.com/smartinez87/exception_notification/tags</a>
