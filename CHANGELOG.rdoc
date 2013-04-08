@@ -1,12 +1,8 @@
-== 3.1.0
+== 4.0.0
 
 * enhancements
   * Be able to implement custom notifiers (by @jweslley)
   * Add Webhook notifier (by @jweslley)
-
-== 3.0.2
-
-* enhancements
   * Rails 4 compatible
 
 * bug fixes

@@ -414,7 +414,15 @@ Whatever::Application.config.middleware.use ExceptionNotifier,
 Versions
 ---
 
-NOTE: Master branch is currently set for v3.0.0
+NOTE: Master branch is currently set for v4.0.0
+
+For v3.0.1, see this tag:
+
+<a href="http://github.com/smartinez87/exception_notification/tree/v3.0.1">http://github.com/smartinez87/exception_notification/tree/v3.0.1</a>
+
+For v3.0.0, see this tag:
+
+<a href="http://github.com/smartinez87/exception_notification/tree/v3.0.0">http://github.com/smartinez87/exception_notification/tree/v3.0.0</a>
 
 For v2.6.1, see this tag:
 
