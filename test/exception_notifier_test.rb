@@ -63,4 +63,20 @@ class ExceptionNotifierTest < ActiveSupport::TestCase
     ExceptionNotifier.unregister_exception_notifier(:notifier2)
     assert ExceptionNotifier.notifiers == [:email]
   end
+
+  test "should not send notification if one of ignored exceptions" do
+    notifier_calls = 0
+    test_notifier = lambda { |exception, options| notifier_calls += 1 }
+    ExceptionNotifier.register_exception_notifier(:test, test_notifier)
+
+    exception = StandardError.new
+
+    ExceptionNotifier.notify_exception(exception, {:notifiers => :test})
+    assert notifier_calls == 1
+
+    ExceptionNotifier.notify_exception(exception, {:notifiers => :test, :ignore_exceptions => 'StandardError' })
+    assert notifier_calls == 1
+
+    ExceptionNotifier.unregister_exception_notifier(:test)
+  end
 end

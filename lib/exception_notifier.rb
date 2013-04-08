@@ -11,6 +11,7 @@ class ExceptionNotifier
 
   class << self
     @@notifiers = {}
+    @@ignored_exceptions = []
 
     def default_ignore_exceptions
       ['ActiveRecord::RecordNotFound', 'AbstractController::ActionNotFound', 'ActionController::RoutingError']
@@ -21,6 +22,7 @@ class ExceptionNotifier
     end
 
     def notify_exception(exception, options={})
+      return if ignored_exception?(options[:ignore_exceptions], exception)
       selected_notifiers = options.delete(:notifiers) || notifiers
       [*selected_notifiers].each do |notifier|
         fire_notification(notifier, exception, options)
@@ -43,7 +45,19 @@ class ExceptionNotifier
       @@notifiers.keys
     end
 
+    def ignored_exceptions
+      @@ignored_exceptions
+    end
+
+    def ignored_exceptions=(ignored_exceptions)
+      @@ignored_exceptions = Array.wrap(ignored_exceptions)
+    end
+
     private
+    def ignored_exception?(ignore_array, exception)
+      (ignored_exceptions + Array.wrap(ignore_array)).map(&:to_s).include?(exception.class.name)
+    end
+
     def fire_notification(notifier_name, exception, options)
       notifier = registered_exception_notifier(notifier_name)
       notifier.call(exception, options)
@@ -56,9 +70,9 @@ class ExceptionNotifier
     @app = app
 
     @options = {}
-    @options[:ignore_exceptions] = options.delete(:ignore_exceptions) || self.class.default_ignore_exceptions
-    @options[:ignore_crawlers]   = options.delete(:ignore_crawlers) || self.class.default_ignore_crawlers
-    @options[:ignore_if]         = options.delete(:ignore_if) || lambda { |env, e| false }
+    @options[:ignore_crawlers]    = options.delete(:ignore_crawlers) || self.class.default_ignore_crawlers
+    @options[:ignore_if]          = options.delete(:ignore_if) || lambda { |env, e| false }
+    self.class.ignored_exceptions = options.delete(:ignore_exceptions) || self.class.default_ignore_exceptions
 
     options = make_options_backward_compatible(options)
     options.each do |notifier_name, options|
@@ -71,8 +85,7 @@ class ExceptionNotifier
   rescue Exception => exception
     options = @options.dup
 
-    unless ignored_exception(options[:ignore_exceptions], exception)       ||
-           from_crawler(options[:ignore_crawlers], env['HTTP_USER_AGENT']) ||
+    unless from_crawler(options[:ignore_crawlers], env['HTTP_USER_AGENT']) ||
            conditionally_ignored(options[:ignore_if], env, exception)
       ExceptionNotifier.notify_exception(exception, options.reverse_merge(:env => env))
       env['exception_notifier.delivered'] = true
@@ -82,10 +95,6 @@ class ExceptionNotifier
   end
 
   private
-
-  def ignored_exception(ignore_array, exception)
-    Array.wrap(ignore_array).map(&:to_s).include?(exception.class.name)
-  end
 
   def from_crawler(ignore_array, agent)
     ignore_array.each do |crawler|
