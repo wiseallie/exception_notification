@@ -19,4 +19,5 @@ Gem::Specification.new do |s|
   s.add_development_dependency "rails", ">= 3.0.4"
   s.add_development_dependency "mocha", ">= 0.13.0"
   s.add_development_dependency "sqlite3", ">= 1.3.4"
+  s.add_development_dependency "coveralls", "~> 0.6.5"
 end

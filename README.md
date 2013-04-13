@@ -3,6 +3,7 @@ Exception Notifier Plugin for Rails
 
 [![Gem Version](https://fury-badge.herokuapp.com/rb/exception_notification.png)](http://badge.fury.io/rb/exception_notification)
 [![Travis](https://api.travis-ci.org/smartinez87/exception_notification.png)](http://travis-ci.org/smartinez87/exception_notification)
+[![Coverage Status](https://coveralls.io/repos/smartinez87/exception_notification/badge.png?branch=master)](https://coveralls.io/r/smartinez87/exception_notification)
 [![Code Climate](https://codeclimate.com/github/smartinez87/exception_notification.png)](https://codeclimate.com/github/smartinez87/exception_notification)
 ![project status](http://stillmaintained.com/smartinez87/exception_notification.png)
 
