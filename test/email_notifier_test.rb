@@ -2,12 +2,12 @@ require 'test_helper'
 
 class EmailNotifierTest < ActiveSupport::TestCase
   setup do
+    Time.stubs(:current).returns('Sat, 20 Apr 2013 20:58:55 UTC +00:00')
     @email_notifier = ExceptionNotifier.registered_exception_notifier(:email)
     begin
       1/0
     rescue => e
       @exception = e
-      @time = Time.current
       @mail = @email_notifier.create_email(@exception,
         :data => {:job => 'DivideWorkerJob', :payload => '1/0', :message => 'My Custom Message'})
     end
@@ -87,7 +87,7 @@ class EmailNotifierTest < ActiveSupport::TestCase
   end
 
   test "mail should say exception was raised in background at show timestamp" do
-    assert @mail.encoded.include? "A ZeroDivisionError occurred in background at #{@time}"
+    assert @mail.encoded.include? "A ZeroDivisionError occurred in background at #{Time.current}"
   end
 
   test "mail should prefix exception class with 'an' instead of 'a' when it starts with a vowel" do
@@ -98,11 +98,11 @@ class EmailNotifierTest < ActiveSupport::TestCase
       @vowel_mail = @email_notifier.create_email(@vowel_exception)
     end
 
-    assert @vowel_mail.encoded.include? "An ActiveRecord::RecordNotFound occurred in background at #{@time}"
+    assert @vowel_mail.encoded.include? "An ActiveRecord::RecordNotFound occurred in background at #{Time.current}"
   end
 
   test "mail should contain backtrace in body" do
-    assert @mail.encoded.include?("test/email_notifier_test.rb:7"), "\n#{@mail.inspect}"
+    assert @mail.encoded.include?("test/email_notifier_test.rb:8"), "\n#{@mail.inspect}"
   end
 
   test "mail should contain data in body" do
