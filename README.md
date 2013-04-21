@@ -7,6 +7,9 @@ Exception Notifier Plugin for Rails
 [![Code Climate](https://codeclimate.com/github/smartinez87/exception_notification.png)](https://codeclimate.com/github/smartinez87/exception_notification)
 ![project status](http://stillmaintained.com/smartinez87/exception_notification.png)
 
+NOTE: Master branch is currently set for v4.0.0 
+
+-
 
 The Exception Notifier plugin provides a mailer object and a default set of
 templates for sending email notifications when errors occur in a Rails
@@ -414,8 +417,6 @@ Whatever::Application.config.middleware.use ExceptionNotifier,
 
 Versions
 ---
-
-NOTE: Master branch is currently set for v4.0.0
 
 For v3.0.1, see this tag:
 
