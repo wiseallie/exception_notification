@@ -5,7 +5,8 @@ require 'pp'
 class ExceptionNotifier
   class EmailNotifier < Struct.new(:sender_address, :exception_recipients,
     :email_prefix, :email_format, :sections, :background_sections,
-    :verbose_subject, :normalize_subject, :smtp_settings, :email_headers)
+    :verbose_subject, :normalize_subject, :smtp_settings, :email_headers,
+    :mailer_parent, :template_path)
 
     class << self
       attr_writer :default_sender_address
@@ -19,6 +20,7 @@ class ExceptionNotifier
       attr_writer :default_smtp_settings
       attr_writer :default_email_headers
       attr_writer :default_mailer_parent
+      attr_writer :default_template_path
 
       def default_sender_address
         @default_sender_address || %("Exception Notifier" <exception.notifier@example.com>)
@@ -64,8 +66,13 @@ class ExceptionNotifier
         @default_mailer_parent || 'ActionMailer::Base'
       end
 
+      def default_template_path
+        @default_template_path || 'exception_notifier'
+      end
+
       def default_options
-        { :sender_address => default_sender_address,
+        {
+          :sender_address => default_sender_address,
           :exception_recipients => default_exception_recipients,
           :email_prefix => default_email_prefix,
           :email_format => default_email_format,
@@ -73,20 +80,15 @@ class ExceptionNotifier
           :background_sections => default_background_sections,
           :verbose_subject => default_verbose_subject,
           :normalize_subject => default_normalize_subject,
-          :template_path => mailer.mailer_name,
           :smtp_settings => default_smtp_settings,
-          :email_headers => default_email_headers }
+          :email_headers => default_email_headers,
+          :mailer_parent => default_mailer_parent,
+          :template_path => default_template_path
+        }
       end
 
       def normalize_digits(string)
         string.gsub(/[0-9]+/, 'N')
-      end
-
-      def mailer
-        @mailer ||= begin
-          mailer = Class.new(default_mailer_parent.constantize)
-          mailer.extend(Mailer)
-        end
       end
     end
 
@@ -98,7 +100,6 @@ class ExceptionNotifier
 
       def self.extended(base)
         base.class_eval do
-          self.mailer_name = 'exception_notifier'
           # Append application view path to the ExceptionNotifier lookup context.
           self.append_view_path "#{File.dirname(__FILE__)}/views"
 
@@ -212,11 +213,13 @@ class ExceptionNotifier
       EmailNotifier.default_smtp_settings        = options[:smtp_settings]
       EmailNotifier.default_email_headers        = options[:email_headers]
       EmailNotifier.default_mailer_parent        = options[:mailer_parent]
+      EmailNotifier.default_template_path        = options[:template_path]
 
       super(*options.reverse_merge(EmailNotifier.default_options).values_at(
         :sender_address, :exception_recipients,
         :email_prefix, :email_format, :sections, :background_sections,
-        :verbose_subject, :normalize_subject, :smtp_settings, :email_headers))
+        :verbose_subject, :normalize_subject, :smtp_settings, :email_headers,
+        :mailer_parent, :template_path))
     end
 
     def options
@@ -225,12 +228,15 @@ class ExceptionNotifier
       end
     end
 
-    def call(exception, options={})
-      create_email(exception, options).deliver
+    def mailer
+      @mailer ||= Class.new(mailer_parent.constantize).tap do |mailer|
+        mailer.extend(EmailNotifier::Mailer)
+        mailer.mailer_name = template_path
+      end
     end
 
-    def mailer
-      self.class.mailer
+    def call(exception, options={})
+      create_email(exception, options).deliver
     end
 
     def create_email(exception, options={})

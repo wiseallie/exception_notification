@@ -45,4 +45,12 @@ class LegacyExceptionNotificationTest < ActiveSupport::TestCase
   test "should have smtp_settings nil by default" do
     assert ExceptionNotifier::EmailNotifier.default_options[:smtp_settings] == nil
   end
+
+  test "should have mailer_parent by default" do
+    assert ExceptionNotifier::EmailNotifier.default_options[:mailer_parent] == 'ActionMailer::Base'
+  end
+
+  test "should have template_path by default" do
+    assert ExceptionNotifier::EmailNotifier.default_options[:template_path] == 'exception_notifier'
+  end
 end

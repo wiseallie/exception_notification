@@ -57,6 +57,10 @@ class EmailNotifierTest < ActiveSupport::TestCase
     assert @email_notifier.smtp_settings == nil
   end
 
+  test "should have template_path by default" do
+    assert @email_notifier.template_path == 'exception_notifier'
+  end
+
   test "should normalize multiple digits into one N" do
     assert_equal 'N foo N bar N baz N',
       ExceptionNotifier::EmailNotifier.normalize_digits('1 foo 12 bar 123 baz 1234')
