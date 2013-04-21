@@ -1,7 +1,8 @@
 == 4.0.0
 
 * enhancements
-  * Turn ExceptionNotification Rails agnostic
+  * Support customizable Mailer class (by @Bishop)
+  * Turn ExceptionNotification Rails agnostic (by @jweslley)
   * Support custom ignore exceptions for background notifications (by @jweslley)
   * Be able to implement custom notifiers (by @jweslley)
   * Add Webhook notifier (by @jweslley)
