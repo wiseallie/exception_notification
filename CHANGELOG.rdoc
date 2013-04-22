@@ -1,6 +1,7 @@
 == 4.0.0
 
 * enhancements
+  * Better style for html views (by @jweslley)
   * Support customizable Mailer class (by @Bishop)
   * Turn ExceptionNotification Rails agnostic (by @jweslley)
   * Support custom ignore exceptions for background notifications (by @jweslley)

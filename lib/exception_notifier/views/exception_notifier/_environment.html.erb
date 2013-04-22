@@ -1,8 +1,18 @@
 <% filtered_env = @request.filtered_env -%>
-<% max = filtered_env.keys.map(&:to_s).max { |a, b| a.length <=> b.length } -%>
-<% filtered_env.keys.map(&:to_s).sort.each do |key| -%>
-* <%= raw("%-*s: %s" % [max.length, key, inspect_object(filtered_env[key])]) %>
-<% end -%>
 
-* Process: <%= raw $$ %>
-* Server : <%= raw `hostname`.chomp %>
+<ul style="list-style: none">
+  <% filtered_env.keys.map(&:to_s).sort.each do |key| -%>
+    <li>
+      <strong><%= key %>:</strong>
+      <span><%= inspect_object(filtered_env[key]) %></span>
+    </li>
+  <% end -%>
+  <li>
+    <strong>Process:</strong>
+    <span><%= raw $$ %></span>
+  </li>
+  <li>
+    <strong>Server:</strong>
+    <span><%= raw Socket.gethostname %></span>
+  </li>
+</ul>

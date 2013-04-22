@@ -1,7 +1,24 @@
-* URL       : <%= raw @request.url %>
-* IP address: <%= raw @request.remote_ip %>
-* Parameters: <%= raw @request.filtered_parameters.inspect %>
-<% if defined?(Rails) %>
-* Rails root: <%= raw Rails.root %>
-<% end %>
-* Timestamp : <%= raw Time.current %>
+<ul style="list-style: none">
+  <li>
+    <strong>URL:</strong>
+    <span><%= raw @request.url %></span>
+  </li>
+  <li>
+    <strong>IP Address:</strong>
+    <span><%= raw @request.remote_ip %></span>
+  </li>
+  <li>
+    <strong>Parameters:</strong>
+    <span><%= raw @request.filtered_parameters.inspect %></span>
+  </li>
+  <% if defined?(Rails) %>
+    <li>
+      <strong>Rails root:</strong>
+      <span><%= raw Rails.root %></span>
+    </li>
+  <% end %>
+  <li>
+    <strong>Timestamp:</strong>
+    <span><%= raw Time.current %></span>
+  </li>
+</ul>
