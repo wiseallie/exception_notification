@@ -7,7 +7,9 @@ Exception Notifier Plugin for Rails
 [![Code Climate](https://codeclimate.com/github/smartinez87/exception_notification.png)](https://codeclimate.com/github/smartinez87/exception_notification)
 ![project status](http://stillmaintained.com/smartinez87/exception_notification.png)
 
-NOTE: Master branch is currently set for v4.0.0 
+**THIS README IS FOR THE MASTER BRANCH AND REFLECTS THE WORK CURRENTLY EXISTING ON THE MASTER BRANCH.
+IF YOU ARE WISHING TO USE A NON-MASTER BRANCH OF EXCEPTION NOTIFICATION,
+PLEASE CONSULT THAT BRANCH'S README AND NOT THIS ONE.**
 
 -
 
