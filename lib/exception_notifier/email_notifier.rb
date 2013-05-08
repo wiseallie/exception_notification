@@ -240,7 +240,7 @@ class ExceptionNotifier
     end
 
     def create_email(exception, options={})
-      env = options.delete(:env)
+      env = options[:env]
       default_options = self.options
       if env.nil?
         mailer.background_exception_notification(exception, options, default_options)
