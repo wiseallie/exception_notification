@@ -57,6 +57,10 @@ class EmailNotifierTest < ActiveSupport::TestCase
     assert @email_notifier.smtp_settings == nil
   end
 
+  test "should have mailer_parent by default" do
+    assert @email_notifier.mailer_parent == 'ActionMailer::Base'
+  end
+
   test "should have template_path by default" do
     assert @email_notifier.template_path == 'exception_notifier'
   end
