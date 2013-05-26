@@ -73,7 +73,7 @@ class ExceptionNotifier
 
     @options = {}
     @options[:ignore_crawlers]    = options.delete(:ignore_crawlers) || self.class.default_ignore_crawlers
-    @options[:ignore_if]          = options.delete(:ignore_if) || lambda { |env, e| false }
+    @options[:ignore_if]          = options.delete(:ignore_if) || ->(env, e) { false }
     self.class.ignored_exceptions = options.delete(:ignore_exceptions) || self.class.default_ignore_exceptions
 
     options = make_options_backward_compatible(options)
