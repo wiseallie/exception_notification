@@ -129,7 +129,7 @@ class EmailNotifierTest < ActiveSupport::TestCase
       raise ActiveRecord::RecordNotFound
     rescue => e
       @ignored_exception = e
-      unless ExceptionNotifier.default_ignore_exceptions.include?(@ignored_exception.class.name)
+      unless ExceptionNotifier.ignored_exceptions.include?(@ignored_exception.class.name)
         @ignored_mail = @email_notifier.create_email(@ignored_exception)
       end
     end

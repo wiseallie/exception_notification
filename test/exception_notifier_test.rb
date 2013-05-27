@@ -2,11 +2,7 @@ require 'test_helper'
 
 class ExceptionNotifierTest < ActiveSupport::TestCase
   test "should have default ignored exceptions" do
-    assert ExceptionNotifier.default_ignore_exceptions == ['ActiveRecord::RecordNotFound', 'AbstractController::ActionNotFound', 'ActionController::RoutingError']
-  end
-
-  test "should have ignored crawler by default" do
-    assert ExceptionNotifier.default_ignore_crawlers == []
+    assert ExceptionNotifier.ignored_exceptions == ['ActiveRecord::RecordNotFound', 'AbstractController::ActionNotFound', 'ActionController::RoutingError']
   end
 
   test "should have email notifier registered" do

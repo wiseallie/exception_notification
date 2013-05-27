@@ -74,7 +74,7 @@ class PostsControllerTest < ActionController::TestCase
       get :show, :id => @post.to_param + "10"
     rescue => e
       @ignored_exception = e
-      unless ExceptionNotifier.default_ignore_exceptions.include?(@ignored_exception.class.name)
+      unless ExceptionNotifier.ignored_exceptions.include?(@ignored_exception.class.name)
         @ignored_mail = @email_notifier.create_email(@ignored_exception, {:env => request.env})
       end
     end
@@ -107,7 +107,7 @@ class PostsControllerTest < ActionController::TestCase
       custom_env['exception_notifier.options'] ||= {}
       custom_env['exception_notifier.options'].merge!(:ignore_crawlers => %w(Googlebot))
       ignore_array = custom_env['exception_notifier.options'][:ignore_crawlers]
-      unless ExceptionNotifier.new(Dummy::Application, custom_env['exception_notifier.options']).send(:from_crawler, ignore_array, custom_env['HTTP_USER_AGENT'])
+      unless ExceptionNotification::Rack.new(Dummy::Application, custom_env['exception_notifier.options']).send(:from_crawler, ignore_array, custom_env['HTTP_USER_AGENT'])
         @ignored_mail = @email_notifier.create_email(@exception, {:env => custom_env})
       end
     end
@@ -126,7 +126,7 @@ class PostsControllerTest < ActionController::TestCase
       custom_env['exception_notifier.options'] ||= {}
       ignore_cond = {:ignore_if => lambda {|env, e| (env['IGNOREME'] == 'IGNOREME') && (e.message =~ /undefined method/)}}
       custom_env['exception_notifier.options'].merge!(ignore_cond)
-      unless ExceptionNotifier.new(Dummy::Application, custom_env['exception_notifier.options']).send(:conditionally_ignored, ignore_cond[:ignore_if], custom_env, @exception)
+      unless ExceptionNotification::Rack.new(Dummy::Application, custom_env['exception_notifier.options']).send(:conditionally_ignored, ignore_cond[:ignore_if], custom_env, @exception)
         @ignored_mail = @email_notifier.create_email(@exception, {:env => custom_env})
       end
     end

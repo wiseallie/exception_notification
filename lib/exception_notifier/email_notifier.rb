@@ -2,7 +2,7 @@ require 'action_mailer'
 require 'action_dispatch'
 require 'pp'
 
-class ExceptionNotifier
+module ExceptionNotifier
   class EmailNotifier < Struct.new(:sender_address, :exception_recipients,
     :email_prefix, :email_format, :sections, :background_sections,
     :verbose_subject, :normalize_subject, :smtp_settings, :email_headers,

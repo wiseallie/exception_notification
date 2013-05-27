@@ -1,7 +1,7 @@
 # Load the rails application
 require File.expand_path('../application', __FILE__)
 
-Dummy::Application.config.middleware.use ExceptionNotifier,
+Dummy::Application.config.middleware.use ExceptionNotification::Rack,
   :email => {
     :email_prefix => "[Dummy ERROR] ",
     :sender_address => %{"Dummy Notifier" <dummynotifier@example.com>},
