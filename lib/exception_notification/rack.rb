@@ -1,5 +1,3 @@
-require 'active_support/deprecation'
-
 module ExceptionNotification
   class Rack
     def initialize(app, options = {})
@@ -10,7 +8,6 @@ module ExceptionNotification
       @options[:ignore_if]          = options.delete(:ignore_if) || ->(env, e) { false }
       ExceptionNotifier.ignored_exceptions = options.delete(:ignore_exceptions) if options.key?(:ignore_exceptions)
 
-      options = make_options_backward_compatible(options)
       options.each do |notifier_name, options|
         ExceptionNotifier.register_exception_notifier(notifier_name, options)
       end
@@ -43,21 +40,6 @@ module ExceptionNotification
       ignore_proc.call(env, exception)
     rescue Exception
       false
-    end
-
-    def make_options_backward_compatible(options)
-      email_options_names = [:sender_address, :exception_recipients,
-          :email_prefix, :email_format, :sections, :background_sections,
-          :verbose_subject, :normalize_subject, :smtp_settings, :email_headers, :mailer_parent]
-
-      if email_options_names.any?{|eo| options.has_key?(eo) }
-        ActiveSupport::Deprecation.warn "You are using an old configuration style for ExceptionNotifier middleware. Please, revise your configuration options later."
-        email_options = options.select{ |k,v| email_options_names.include?(k) }
-        options.reject!{ |k,v| email_options_names.include?(k) }
-        options[:email] = email_options
-      end
-
-      options
     end
   end
 end
