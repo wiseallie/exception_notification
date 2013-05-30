@@ -33,6 +33,7 @@ module ExceptionNotifier
         raise ArgumentError, "Invalid notifier '#{name}' defined as #{notifier_or_options.inspect}"
       end
     end
+    alias add_notifier register_exception_notifier
 
     def unregister_exception_notifier(name)
       @@notifiers.delete(name)
