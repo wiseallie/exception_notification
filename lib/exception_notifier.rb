@@ -14,10 +14,15 @@ module ExceptionNotifier
   @@ignored_exceptions = %w{ActiveRecord::RecordNotFound AbstractController::ActionNotFound ActionController::RoutingError}
 
   class << self
+    # Store conditions that decide when exceptions must be ignored or not.
+    @@ignores = []
+
+    # Store notifiers that send notifications when exceptions are raised.
     @@notifiers = {}
 
     def notify_exception(exception, options={})
-      return if ignored_exception?(options[:ignore_exceptions], exception)
+      return false if ignored_exception?(options[:ignore_exceptions], exception)
+      return false if ignored?(exception, options)
       selected_notifiers = options.delete(:notifiers) || notifiers
       [*selected_notifiers].each do |notifier|
         fire_notification(notifier, exception, options.dup)
@@ -47,7 +52,26 @@ module ExceptionNotifier
       @@notifiers.keys
     end
 
+    # Adds a condition to decide when an exception must be ignored or not.
+    #
+    #   ExceptionNotifier.ignore_if do |exception, options|
+    #     not Rails.env.production?
+    #   end
+    def ignore_if(&block)
+      @@ignores << block
+    end
+
+    def clear_ignore_conditions!
+      @@ignores.clear
+    end
+
     private
+    def ignored?(exception, options)
+      @@ignores.any?{ |condition| condition.call(exception, options) }
+    rescue Exception
+      false
+    end
+
     def ignored_exception?(ignore_array, exception)
       (Array(ignored_exceptions) + Array(ignore_array)).map(&:to_s).include?(exception.class.name)
     end
