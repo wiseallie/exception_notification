@@ -1,3 +1,4 @@
+require 'logger'
 require 'active_support/core_ext/string/inflections'
 
 module ExceptionNotifier
@@ -8,6 +9,10 @@ module ExceptionNotifier
   autoload :WebhookNotifier, 'exception_notifier/webhook_notifier'
 
   class UndefinedNotifierError < StandardError; end
+
+  # Define logger
+  mattr_accessor :logger
+  @@logger = Logger.new(STDOUT)
 
   # Define a set of exceptions to be ignored, ie, dont send notifications when any of them are raised.
   mattr_accessor :ignored_exceptions
@@ -68,7 +73,8 @@ module ExceptionNotifier
     private
     def ignored?(exception, options)
       @@ignores.any?{ |condition| condition.call(exception, options) }
-    rescue Exception
+    rescue Exception => e
+      logger.warn "An error occurred when evaluating an ignore condition. #{e.class}: #{e.message}"
       false
     end
 
@@ -79,7 +85,8 @@ module ExceptionNotifier
     def fire_notification(notifier_name, exception, options)
       notifier = registered_exception_notifier(notifier_name)
       notifier.call(exception, options)
-    rescue
+    rescue Exception => e
+      logger.warn "An error occurred when sending a notification using '#{notifier_name}' notifier. #{e.class}: #{e.message}"
       false
     end
 
