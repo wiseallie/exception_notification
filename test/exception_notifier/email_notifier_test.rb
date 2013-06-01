@@ -53,8 +53,12 @@ class EmailNotifierTest < ActiveSupport::TestCase
     assert @email_notifier.normalize_subject == false
   end
 
-  test "should have smtp_settings nil by default" do
-    assert @email_notifier.smtp_settings == nil
+  test "should have delivery_method nil by default" do
+    assert @email_notifier.delivery_method == nil
+  end
+
+  test "should have mailer_settings nil by default" do
+    assert @email_notifier.mailer_settings == nil
   end
 
   test "should have mailer_parent by default" do
