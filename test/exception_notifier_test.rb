@@ -60,7 +60,7 @@ class ExceptionNotifierTest < ActiveSupport::TestCase
     assert ExceptionNotifier.notifiers == [:email]
   end
 
-  test "should not send notification if exception is ignored by a condition" do
+  test "should ignore exception if satisfies conditional ignore" do
     env = "production"
     ExceptionNotifier.ignore_if do |exception, options|
       env != "production"

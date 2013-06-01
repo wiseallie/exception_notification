@@ -3,10 +3,21 @@ module ExceptionNotification
     def initialize(app, options = {})
       @app = app
 
-      @options = {}
-      @options[:ignore_crawlers]    = options.delete(:ignore_crawlers) || []
-      @options[:ignore_if]          = options.delete(:ignore_if) || ->(env, e) { false }
       ExceptionNotifier.ignored_exceptions = options.delete(:ignore_exceptions) if options.key?(:ignore_exceptions)
+
+      if options.key?(:ignore_if)
+        rack_ignore = options.delete(:ignore_if)
+        ExceptionNotifier.ignore_if do |exception, options|
+          options.key?(:env) && rack_ignore.call(options[:env], exception)
+        end
+      end
+
+      if options.key?(:ignore_crawlers)
+        ignore_crawlers = options.delete(:ignore_crawlers)
+        ExceptionNotifier.ignore_if do |exception, options|
+          options.key?(:env) && from_crawler(options[:env], ignore_crawlers)
+        end
+      end
 
       options.each do |notifier_name, options|
         ExceptionNotifier.register_exception_notifier(notifier_name, options)
@@ -16,30 +27,19 @@ module ExceptionNotification
     def call(env)
       @app.call(env)
     rescue Exception => exception
-      options = @options.dup
-
-      unless from_crawler(options[:ignore_crawlers], env['HTTP_USER_AGENT']) ||
-            conditionally_ignored(options[:ignore_if], env, exception)
-        ExceptionNotifier.notify_exception(exception, options.reverse_merge(:env => env))
+      unless ExceptionNotifier.notify_exception(exception, :env => env)
         env['exception_notifier.delivered'] = true
       end
-
       raise exception
     end
 
     private
 
-    def from_crawler(ignore_array, agent)
-      ignore_array.each do |crawler|
-        return true if (agent =~ Regexp.new(crawler))
-      end unless ignore_array.blank?
-      false
-    end
-
-    def conditionally_ignored(ignore_proc, env, exception)
-      ignore_proc.call(env, exception)
-    rescue Exception
-      false
+    def from_crawler(env, ignored_crawlers)
+      agent = env['HTTP_USER_AGENT']
+      Array(ignored_crawlers).any? do |crawler|
+        agent =~ Regexp.new(crawler)
+      end
     end
   end
 end
