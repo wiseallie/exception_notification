@@ -27,7 +27,7 @@ module ExceptionNotification
     def call(env)
       @app.call(env)
     rescue Exception => exception
-      unless ExceptionNotifier.notify_exception(exception, :env => env)
+      if ExceptionNotifier.notify_exception(exception, :env => env)
         env['exception_notifier.delivered'] = true
       end
       raise exception

@@ -32,6 +32,7 @@ module ExceptionNotifier
       [*selected_notifiers].each do |notifier|
         fire_notification(notifier, exception, options.dup)
       end
+      true
     end
 
     def register_exception_notifier(name, notifier_or_options)
