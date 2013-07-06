@@ -53,18 +53,42 @@ Whatever::Application.config.middleware.use ExceptionNotification::Rack,
 In order to use ExceptionNotification with Sinatra, please take a look in the [example application](https://github.com/smartinez87/exception_notification/tree/master/examples/sinatra).
 
 
+### Upgrading to 4.x version
+
+As of 4.x version the configuration syntax has changed. All email related options MUST BE nested under the `:email` key. Thus, previous configuration like:
+
+```ruby
+Whatever::Application.config.middleware.use ExceptionNotifier,
+  :email_prefix => "[Whatever] ",
+  :sender_address => %{"notifier" <notifier@example.com>},
+  :exception_recipients => %w{exceptions@example.com}
+```
+
+becomes:
+
+```ruby
+Whatever::Application.config.middleware.use ExceptionNotification::Rack,
+  :email => {
+    :email_prefix => "[Whatever] ",
+    :sender_address => %{"notifier" <notifier@example.com>},
+    :exception_recipients => %w{exceptions@example.com}
+  }
+```
+
+Beside that, the rack middlware was renamed to `ExceptionNotification::Rack`.
+
 ## Notifiers
 
 ExceptionNotification relies on notifiers to deliver notifications when errors occur in your applications. By default, three notifiers are available: [email notifier](#email-notifier), [campfire notifier](#campfire-notifier) and [webhook notifier](#webhook-notifier). But, you also can easily implement your own [custom notifier](#custom-notifier).
 
 
-## Email notifier
+### Email notifier
 
 The Email notifier sends notifications by email. The notifications/emails sent includes information about the current request, session, and environment, and also gives a backtrace of the exception.
 
 After an exception notification has been delivered the rack environment variable 'exception_notifier.delivered' will be set to true.
 
-### ActionMailer configuration
+#### ActionMailer configuration
 
 For the email to be sent, there must be a default ActionMailer `delivery_method` setting configured. If you do not have one, you can use the following code (assuming your app server machine has `sendmail`). Depending on the environment you want ExceptionNotification to run in, put the following code in your `config/environments/production.rb` and/or `config/environments/development.rb`:
 
@@ -79,30 +103,30 @@ config.action_mailer.perform_deliveries = true
 config.action_mailer.raise_delivery_errors = true
 ```
 
-### Options
+#### Options
 
-#### sender_address
+##### sender_address
 
 *String, default: %("Exception Notifier" <exception.notifier@example.com>)*
 
 Who the message is from.
 
 
-#### exception_recipients
+##### exception_recipients
 
 *String/Array of strings, default: []*
 
 Who the message is destined for, can be a string of addresses, or an array of addresses.
 
 
-#### email_prefix
+##### email_prefix
 
 *String, default: [ERROR]*
 
 The subject's prefix of the message.
 
 
-#### sections
+##### sections
 
 *Array of strings, default: %w(request session environment backtrace)*
 
@@ -152,7 +176,7 @@ end
 In the above case, `@document` and `@person` would be made available to the email renderer, allowing your new section(s) to access and display them. See the existing sections defined by the plugin for examples of how to write your own.
 
 
-#### background_sections
+##### background_sections
 
 *Array of strings, default: %w(backtrace data)*
 
@@ -169,7 +193,7 @@ Whatever::Application.config.middleware.use ExceptionNotification::Rack,
 ```
 
 
-#### email_headers
+##### email_headers
 
 *Hash os strings, default: {}*
 
@@ -186,28 +210,28 @@ Whatever::Application.config.middleware.use ExceptionNotification::Rack,
 ```
 
 
-#### verbose_subject
+##### verbose_subject
 
 *Boolean, default: true*
 
 If enabled, include the exception message in the subject. Use `:verbose_subject => false` to exclude it.
 
 
-#### normalize_subject
+##### normalize_subject
 
 *Boolean, default: false*
 
 If enabled, remove numbers from subject so they thread as a single one. Use `:normalize_subject => true` to enable it.
 
 
-#### email_format
+##### email_format
 
 *Symbol, default: :text*
 
 By default, ExceptionNotification sends emails in plain text, in order to sends multipart notifications (aka HTML emails) use `:email_format => :html`.
 
 
-#### delivery_method
+##### delivery_method
 
 *Symbol, default: :smtp*
 
@@ -243,18 +267,18 @@ Whatever::Application.config.middleware.use ExceptionNotification::Rack,
 ```
 
 
-#### mailer_parent
+##### mailer_parent
 
 *String, default: ActionMailer::Base*
 
 The parent mailer which ExceptionNotification mailer inherit from.
 
 
-## Campfire notifier
+### Campfire notifier
 
 This notifier sends notifications to your Campfire room.
 
-### Usage
+#### Usage
 
 Just add the [tinder](https://github.com/collectiveidea/tinder) gem to your `Gemfile`:
 
@@ -278,21 +302,21 @@ Whatever::Application.config.middleware.use ExceptionNotification::Rack,
   }
 ```
 
-### Options
+#### Options
 
-#### subdomain
+##### subdomain
 
 *String, required*
 
 Your subdomain at Campfire.
 
-#### room_name
+##### room_name
 
 *String, required*
 
 The Campfire room where the notifications must be published to.
 
-#### token
+##### token
 
 *String, required*
 
@@ -302,11 +326,11 @@ The API token to allow access to your Campfire account.
 For more options to set Campfire, like _ssl_, check [here](https://github.com/collectiveidea/tinder/blob/master/lib/tinder/campfire.rb#L17).
 
 
-## Webhook notifier
+### Webhook notifier
 
 This notifier ships notifications over the HTTP protocol.
 
-### Usage
+#### Usage
 
 Just add the [HTTParty](https://github.com/jnunemaker/httparty) gem to your `Gemfile`:
 
@@ -364,7 +388,7 @@ Whatever::Application.config.middleware.use ExceptionNotification::Rack,
 For more HTTParty options, check out the [documentation](https://github.com/jnunemaker/httparty).
 
 
-## Custom notifier
+### Custom notifier
 
 Simply put, notifiers are objects which respond to `#call(exception, options)` method. Thus, a lambda can be used as a notifier as follow:
 
@@ -375,7 +399,7 @@ ExceptionNotifier.add_notifier :custom_notifier_name,
 
 More advanced users or third-party framework developers, also can create notifiers to be shipped in gems and take advantage of ExceptionNotification's Notifier API to standardize the [various](https://github.com/airbrake/airbrake) [solutions](https://www.honeybadger.io) [out](http://www.exceptional.io) [there](https://bugsnag.com). For this, beyond the `#call(exception, options)` method, the notifier class MUST BE defined under the ExceptionNotifier namespace and its name sufixed by `Notifier`, e.g: ExceptionNotifier::SimpleNotifier.
 
-### Example
+#### Example
 
 Define the custom notifier:
 
