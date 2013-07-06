@@ -1,8 +1,8 @@
 Gem::Specification.new do |s|
   s.name = 'exception_notification'
-  s.version = '4.0.0.rc1'
+  s.version = '4.0.0'
   s.authors = ["Jamis Buck", "Josh Peek"]
-  s.date = %q{2013-06-20}
+  s.date = %q{2013-07-06}
   s.summary = "Exception notification for Rails apps"
   s.homepage = "http://smartinez87.github.com/exception_notification"
   s.email = "smartinez87@gmail.com"
