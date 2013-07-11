@@ -258,7 +258,7 @@ Whatever::Application.config.middleware.use ExceptionNotification::Rack,
     :email_prefix         => "[Whatever] ",
     :sender_address       => %{"notifier" <notifier@example.com>},
     :exception_recipients => %w{exceptions@example.com},
-    :delivery_method => :stmp,
+    :delivery_method => :smtp,
     :smtp_settings => {
       :user_name => "bob",
       :password => "password",
