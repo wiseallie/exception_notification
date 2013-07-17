@@ -22,6 +22,7 @@ class WebhookNotifierTest < ActiveSupport::TestCase
     assert_equal response[:body][:exception][:controller], "#<ControllerName:0x007f9642a04d00>"
     assert response[:body][:exception][:session].has_key?(:session_item1)
     assert response[:body][:exception][:parameters].has_key?(:controller)
+    assert response[:body][:exception][:data].has_key?(:data_item1)
   end
 
   private
@@ -40,7 +41,8 @@ class WebhookNotifierTest < ActiveSupport::TestCase
           :environment => {:env_item1 => "envitem1", :env_item2 => "envitem2"},
           :controller => '#<ControllerName:0x007f9642a04d00>',
           :session => {:session_item1 => "sessionitem1", :session_item2 => "sessionitem2"},
-          :parameters => {:action =>"index", :controller =>"projects"}
+          :parameters => {:action =>"index", :controller =>"projects"},
+          :data => {:data_item1 => "datavalue1", :data_item2 => "datavalue2"}
         }
       }
     }

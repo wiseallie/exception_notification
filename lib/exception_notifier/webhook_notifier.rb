@@ -24,7 +24,8 @@ module ExceptionNotifier
                                     :environment => env.inspect,
                                     :controller => env['action_controller.instance'] || MissingController.new,
                                     :session => env['action_dispatch.request.unsigned_session_cookie'].inspect,
-                                    :parameters => env['action_dispatch.request.parameters'].inspect
+                                    :parameters => env['action_dispatch.request.parameters'].inspect,
+                                    :data => (env['exception_notifier.exception_data'] || {}).merge(options[:data] || {}) 
                                   }
 
       HTTParty.send(http_method, url, options)
