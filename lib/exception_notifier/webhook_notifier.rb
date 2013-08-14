@@ -27,11 +27,11 @@ module ExceptionNotifier
       options[:body] ||= {}
       options[:body][:exception] = {:error_class => exception.class.to_s,
                                     :message => exception.message.inspect,
-                                    :backtrace => exception.backtrace,
-                                    :data => (env['exception_notifier.exception_data'] || {}).merge(options[:data] || {}),
-                                    :request => (request_items || {})
-                                  }
-
+                                    :backtrace => exception.backtrace}
+      
+      options[:body][:request] = (request_items || {})
+      options[:body][:data] = (env['exception_notifier.exception_data'] || {}).merge(options[:data] || {})
+      
       HTTParty.send(http_method, url, options)
     end
   end
