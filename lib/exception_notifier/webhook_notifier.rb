@@ -26,15 +26,15 @@ module ExceptionNotifier
       unless env.nil?
         request = ActionDispatch::Request.new(env)
 
-        request_items = {:cookies => request.cookies.inspect,
-                         :url => request.original_url,
+        request_items = {:url => request.original_url,
+                         :http_method => request.http_method,
                          :ip_address => request.remote_ip,
                          :parameters => request.filtered_parameters,
-                         :session => request.session,
-                         :environment => request.filtered_env,
                          :timestamp => Time.current }
 
-        options[:body][:request] = (request_items || {})
+        options[:body][:request] = request_items
+        options[:body][:session] = request.session
+        options[:body][:environment] = request.filtered_env
       end
 
       HTTParty.send(http_method, url, options)
