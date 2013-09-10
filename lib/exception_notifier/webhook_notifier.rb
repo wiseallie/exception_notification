@@ -1,3 +1,5 @@
+require 'action_dispatch'
+
 module ExceptionNotifier
   class WebhookNotifier
 
@@ -13,6 +15,9 @@ module ExceptionNotifier
       http_method = options.delete(:http_method) || :post
 
       options[:body] ||= {}
+      options[:body][:server] = Socket.gethostname
+      options[:body][:process] = $$
+      options[:body][:rails_root] = Rails.root if defined?(Rails)
       options[:body][:exception] = {:error_class => exception.class.to_s,
                                     :message => exception.message.inspect,
                                     :backtrace => exception.backtrace}
@@ -23,11 +28,11 @@ module ExceptionNotifier
 
         request_items = {:cookies => request.cookies.inspect,
                          :url => request.original_url,
-                         :ip_address => request.ip,
-                         :environment => env.inspect,
-                         :controller => env['action_controller.instance'] || MissingController.new,
-                         :session => env['action_dispatch.request.unsigned_session_cookie'].inspect,
-                         :parameters => env['action_dispatch.request.parameters'].inspect}
+                         :ip_address => request.remote_ip,
+                         :parameters => request.filtered_parameters,
+                         :session => request.session,
+                         :environment => request.filtered_env,
+                         :timestamp => Time.current }
 
         options[:body][:request] = (request_items || {})
       end
