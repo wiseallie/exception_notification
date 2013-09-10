@@ -77,7 +77,7 @@ module ExceptionNotifier
     def ignored?(exception, options)
       @@ignores.any?{ |condition| condition.call(exception, options) }
     rescue Exception => e
-      logger.warn "An error occurred when evaluating an ignore condition. #{e.class}: #{e.message}"
+      logger.warn "An error occurred when evaluating an ignore condition. #{e.class}: #{e.message}\n#{e.backtrace.join("\n")}"
       false
     end
 
@@ -89,7 +89,7 @@ module ExceptionNotifier
       notifier = registered_exception_notifier(notifier_name)
       notifier.call(exception, options)
     rescue Exception => e
-      logger.warn "An error occurred when sending a notification using '#{notifier_name}' notifier. #{e.class}: #{e.message}"
+      logger.warn "An error occurred when sending a notification using '#{notifier_name}' notifier. #{e.class}: #{e.message}\n#{e.backtrace.join("\n")}"
       false
     end
 
