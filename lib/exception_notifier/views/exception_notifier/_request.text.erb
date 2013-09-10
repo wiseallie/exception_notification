@@ -1,7 +1,8 @@
-* URL       : <%= raw @request.url %>
-* IP address: <%= raw @request.remote_ip %>
-* Parameters: <%= raw @request.filtered_parameters.inspect %>
+* URL        : <%= raw @request.url %>
+* HTTP Method: <%= raw @request.request_method %>
+* IP address : <%= raw @request.remote_ip %>
+* Parameters : <%= raw @request.filtered_parameters.inspect %>
 <% if defined?(Rails) %>
-* Rails root: <%= raw Rails.root %>
+* Rails root : <%= raw Rails.root %>
 <% end %>
-* Timestamp : <%= raw Time.current %>
+* Timestamp  : <%= raw Time.current %>

@@ -4,6 +4,10 @@
     <span><%= raw @request.url %></span>
   </li>
   <li>
+    <strong>HTTP Method:</strong>
+    <span><%= raw @request.request_method %></span>
+  </li>
+  <li>
     <strong>IP Address:</strong>
     <span><%= raw @request.remote_ip %></span>
   </li>
