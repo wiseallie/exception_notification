@@ -38,6 +38,12 @@ ExceptionNotification.configure do |config|
   #   :room_name => 'my_room'
   # }
 
+  # HipChat notifier sends notifications to your HipChat room. Requires 'hipchat' gem.
+  # config.add_notifier :hipchat, {
+  #   :api_token => 'my_token',
+  #   :room_name => 'my_room'
+  # }
+
   # Webhook notifier sends notifications over HTTP protocol. Requires 'httparty' gem.
   # config.add_notifier :webhook, {
   #   :url => 'http://example.com:5555/hubot/path',
