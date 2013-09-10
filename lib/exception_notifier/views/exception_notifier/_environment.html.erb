@@ -7,12 +7,4 @@
       <span><%= inspect_object(filtered_env[key]) %></span>
     </li>
   <% end -%>
-  <li>
-    <strong>Process:</strong>
-    <span><%= raw $$ %></span>
-  </li>
-  <li>
-    <strong>Server:</strong>
-    <span><%= raw Socket.gethostname %></span>
-  </li>
 </ul>

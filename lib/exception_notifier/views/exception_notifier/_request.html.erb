@@ -15,6 +15,14 @@
     <strong>Parameters:</strong>
     <span><%= raw @request.filtered_parameters.inspect %></span>
   </li>
+  <li>
+    <strong>Timestamp:</strong>
+    <span><%= raw Time.current %></span>
+  </li>
+  <li>
+    <strong>Server:</strong>
+    <span><%= raw Socket.gethostname %></span>
+  </li>
   <% if defined?(Rails) %>
     <li>
       <strong>Rails root:</strong>
@@ -22,7 +30,7 @@
     </li>
   <% end %>
   <li>
-    <strong>Timestamp:</strong>
-    <span><%= raw Time.current %></span>
+    <strong>Process:</strong>
+    <span><%= raw $$ %></span>
   </li>
 </ul>
