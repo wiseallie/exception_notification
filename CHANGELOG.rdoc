@@ -2,6 +2,9 @@
 
 * enhancements
   * Add HipChat notifier (by @j15e)
+  * Log backtrace when notification fails
+  * Send more info in Webhook notifier
+  * Add HTTP method to request section
 
 == 4.0.0
 
