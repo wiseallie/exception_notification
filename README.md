@@ -369,19 +369,19 @@ The API token to allow access to your HipChat account.
 
 ##### announce
 
-*Boolean, optionnal*
+*Boolean, optional*
 
 Notify users. Default : false.
 
 ##### color
 
-*String, optionnal*
+*String, optional*
 
 Color of the message. Default : 'red'.
 
 ##### from
 
-*String, optionnal*
+*String, optional, maximum length : 15*
 
 Message will appear from this nickname. Default : 'Exception'.
 
