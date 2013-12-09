@@ -27,7 +27,7 @@ module ExceptionNotifier
         request = ActionDispatch::Request.new(env)
 
         request_items = {:url => request.original_url,
-                         :http_method => request.http_method,
+                         :http_method => request.method,
                          :ip_address => request.remote_ip,
                          :parameters => request.filtered_parameters,
                          :timestamp => Time.current }
