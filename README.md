@@ -367,7 +367,7 @@ The HipChat room where the notifications must be published to.
 
 The API token to allow access to your HipChat account.
 
-##### announce
+##### notify
 
 *Boolean, optional*
 
