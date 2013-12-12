@@ -12,6 +12,7 @@ Gem::Specification.new do |s|
   s.required_rubygems_version = '>= 1.8.11'
 
   s.files = `git ls-files`.split("\n")
+  s.files -= `git ls-files -- .??*`.split("\n")
   s.test_files = `git ls-files -- test`.split("\n")
   s.require_path = 'lib'
 
