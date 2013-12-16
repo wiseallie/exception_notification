@@ -59,6 +59,20 @@ class HipchatNotifierTest < ActiveSupport::TestCase
     assert_nil hipchat.room
   end
 
+  test "should send hipchat notification with message_template" do
+    options = {
+      :api_token => 'good_token',
+      :room_name => 'room_name',
+      :color     => 'yellow',
+      :message_template => ->(exception) { "This is custom message: '#{exception.message}'" }
+    }
+
+    HipChat::Room.any_instance.expects(:send).with('Exception', "This is custom message: '#{fake_exception.message}'", { :color => 'yellow' })
+
+    hipchat = ExceptionNotifier::HipchatNotifier.new(options)
+    hipchat.call(fake_exception)
+  end
+
   private
 
   def fake_body
