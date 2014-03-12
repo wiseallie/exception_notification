@@ -23,7 +23,7 @@
     <strong>Server:</strong>
     <span><%= Socket.gethostname %></span>
   </li>
-  <% if defined?(Rails) %>
+  <% if defined?(Rails) && Rails.respond_to?(:root) %>
     <li>
       <strong>Rails root:</strong>
       <span><%= Rails.root %></span>
