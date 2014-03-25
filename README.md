@@ -266,6 +266,8 @@ Whatever::Application.config.middleware.use ExceptionNotification::Rack,
   }
 ```
 
+A complete list of `smtp_settings` options can be found in the [ActionMailer Configuration documentation](http://api.rubyonrails.org/classes/ActionMailer/Base.html#class-ActionMailer::Base-label-Configuration+options).
+
 
 ##### mailer_parent
 
