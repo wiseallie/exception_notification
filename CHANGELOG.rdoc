@@ -1,3 +1,8 @@
+== unreleased
+
+* enhancements
+  * Add support for Sidekiq 3.0 (by @mbrictson)
+
 == 4.0.1
 
 * enhancements
