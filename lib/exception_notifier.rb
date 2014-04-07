@@ -18,7 +18,7 @@ module ExceptionNotifier
 
   # Define a set of exceptions to be ignored, ie, dont send notifications when any of them are raised.
   mattr_accessor :ignored_exceptions
-  @@ignored_exceptions = %w{ActiveRecord::RecordNotFound AbstractController::ActionNotFound ActionController::RoutingError}
+  @@ignored_exceptions = %w{ActiveRecord::RecordNotFound AbstractController::ActionNotFound ActionController::RoutingError ActionController::UnknownFormat}
 
   class << self
     # Store conditions that decide when exceptions must be ignored or not.
