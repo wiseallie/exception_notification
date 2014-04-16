@@ -17,7 +17,9 @@ module ExceptionNotifier
       options[:body] ||= {}
       options[:body][:server] = Socket.gethostname
       options[:body][:process] = $$
-      options[:body][:rails_root] = Rails.root if defined?(Rails)
+      if defined?(Rails) && Rails.respond_to?(:root)
+        options[:body][:rails_root] = Rails.root
+      end
       options[:body][:exception] = {:error_class => exception.class.to_s,
                                     :message => exception.message.inspect,
                                     :backtrace => exception.backtrace}

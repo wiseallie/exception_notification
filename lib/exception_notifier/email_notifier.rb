@@ -111,7 +111,9 @@ module ExceptionNotifier
           end
 
           def load_custom_views
-            self.prepend_view_path Rails.root.nil? ? "app/views" : "#{Rails.root}/app/views" if defined?(Rails)
+            if defined?(Rails) && Rails.respond_to?(:root)
+              self.prepend_view_path Rails.root.nil? ? "app/views" : "#{Rails.root}/app/views"
+            end
           end
         end
       end
