@@ -720,6 +720,10 @@ or
 
 ## Versions
 
+For v4.0.1, see this tag:
+
+http://github.com/smartinez87/exception_notification/tree/v4.0.1
+
 For v4.0.0, see this tag:
 
 http://github.com/smartinez87/exception_notification/tree/v4.0.0
@@ -731,10 +735,6 @@ http://github.com/smartinez87/exception_notification/tree/v3.0.1
 For v3.0.0, see this tag:
 
 http://github.com/smartinez87/exception_notification/tree/v3.0.0
-
-For v2.6.1, see this tag:
-
-http://github.com/smartinez87/exception_notification/tree/v2.6.1
 
 For previous releases, visit:
 
