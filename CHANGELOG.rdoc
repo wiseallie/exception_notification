@@ -2,7 +2,12 @@
 
 * enhancements
   * Add support for Sidekiq 3.0 (by @mbrictson)
+  * Add IRC notifier (by @nathanjsharpe)
+  * Add ActionController::UnknownFormat to default ignored exceptions (by @rezwyi)
+  * Add message_template option to HipChat notifier (by @makimoto)
 
+* bug fixes
+  * Fix `Rails.root` exception (by @hovatterz)
 == 4.0.1
 
 * enhancements
