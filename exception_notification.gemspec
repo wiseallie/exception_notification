@@ -28,6 +28,6 @@ Gem::Specification.new do |s|
   s.add_development_dependency "sqlite3", ">= 1.3.4"
   s.add_development_dependency "coveralls", "~> 0.6.5"
   s.add_development_dependency "appraisal", "~> 1.0.0"
-  s.add_development_dependency "hipchat", ">= 0.11.0"
+  s.add_development_dependency "hipchat", ">= 1.0.0"
   s.add_development_dependency "carrier-pigeon", ">= 0.7.0"
 end
