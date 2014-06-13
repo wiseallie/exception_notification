@@ -9,8 +9,11 @@ module ExceptionNotifier
       begin
         api_token         = options.delete(:api_token)
         room_name         = options.delete(:room_name)
+        opts              = {
+                              :api_version => options.delete(:api_version) || 'v1'
+                            }
         @from             = options.delete(:from) || 'Exception'
-        @room             = HipChat::Client.new(api_token)[room_name]
+        @room             = HipChat::Client.new(api_token, opts)[room_name]
         @message_template = options.delete(:message_template) || ->(exception) {
           "A new exception occurred: '#{exception.message}' on '#{exception.backtrace.first}'"
         }
