@@ -549,6 +549,67 @@ Join a channel. Default : false.
 
 Nicks to include in the message. Default: []
 
+### Slack notifier
+
+This notifier sends notifications to a slack channel using the slack-notifier gem.
+
+#### Usage
+
+Just add the [slack-notifier](https://github.com/stevenosloan/slack-notifier) gem to your `Gemfile`:
+
+```ruby
+gem 'slack-notifier'
+```
+
+To configure it, you need to set at least the 'team' and 'token' options, like this:
+
+```ruby
+Whatever::Application.config.middleware.use ExceptionNotification::Rack,
+  :email => {
+    :email_prefix => "[Whatever] ",
+    :sender_address => %{"notifier" <notifier@example.com>},
+    :exception_recipients => %w{exceptions@example.com}
+  },
+  :slack => {
+    :team => "myteam",
+    :token => "secret-token",
+    :channel => "#exceptions"
+  }
+```
+
+#### Options
+
+##### team
+
+*String, required*
+
+The name of your team on slack.
+
+##### token
+
+*String, required*
+
+The API token to access your slack team's account.
+
+##### channel
+
+*String, optional*
+
+Message will appear in this channel. Defaults to the channel you set as such on slack.
+
+##### username
+
+*String, optional*
+
+Username of the bot. Default: 'ExceptionNotifierBot'.
+
+##### custom_hook
+
+*String, optional*
+
+Custom hook name. See [slack-notifier](https://github.com/stevenosloan/slack-notifier#custom-hook-name) for
+more information. Default: 'incoming-webhook'
+
 ### Custom notifier
 
 Simply put, notifiers are objects which respond to `#call(exception, options)` method. Thus, a lambda can be used as a notifier as follow:
