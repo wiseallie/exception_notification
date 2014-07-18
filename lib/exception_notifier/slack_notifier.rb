@@ -9,6 +9,7 @@ module ExceptionNotifier
         token = options.fetch(:token)
         custom_hook = options.fetch(:custom_hook, nil)
         options[:username] ||= 'ExceptionNotifierBot'
+        @message_opts = options.fetch(:additional_parameters, {})
 
         if custom_hook.nil?
           @notifier = Slack::Notifier.new team, token, options
@@ -22,7 +23,7 @@ module ExceptionNotifier
 
     def call(exception, options={})
       message = "An exception occurred: '#{exception.message}' on '#{exception.backtrace.first}'"
-      @notifier.ping message if valid?
+      @notifier.ping(message, @message_opts) if valid?
     end
 
     protected
