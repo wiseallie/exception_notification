@@ -573,7 +573,10 @@ Whatever::Application.config.middleware.use ExceptionNotification::Rack,
   :slack => {
     :team => "myteam",
     :token => "secret-token",
-    :channel => "#exceptions"
+    :channel => "#exceptions",
+    :additional_parameters => {
+      :icon_url => "http://image.jpg"
+    }
   }
 ```
 
@@ -609,6 +612,12 @@ Username of the bot. Default: 'ExceptionNotifierBot'.
 
 Custom hook name. See [slack-notifier](https://github.com/stevenosloan/slack-notifier#custom-hook-name) for
 more information. Default: 'incoming-webhook'
+
+##### additional_parameters
+
+*Hash of strings, optional*
+
+Contains additional payload for a message (e.g avatar, attachments, etc). See [slack-notifier](https://github.com/stevenosloan/slack-notifier#additional-parameters) for more information.. Default: '{}'
 
 ### Custom notifier
 
