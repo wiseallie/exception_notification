@@ -571,8 +571,7 @@ Whatever::Application.config.middleware.use ExceptionNotification::Rack,
     :exception_recipients => %w{exceptions@example.com}
   },
   :slack => {
-    :team => "myteam",
-    :token => "secret-token",
+    :webhook_url => "[Your webhook url]",
     :channel => "#exceptions",
     :additional_parameters => {
       :icon_url => "http://image.jpg"
