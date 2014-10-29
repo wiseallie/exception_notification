@@ -5,17 +5,10 @@ module ExceptionNotifier
 
     def initialize(options)
       begin
-        team = options.fetch(:team)
-        token = options.fetch(:token)
-        custom_hook = options.fetch(:custom_hook, nil)
+        webhook_url = options.fetch(:webhook_url)
         options[:username] ||= 'ExceptionNotifierBot'
         @message_opts = options.fetch(:additional_parameters, {})
-
-        if custom_hook.nil?
-          @notifier = Slack::Notifier.new team, token, options
-        else
-          @notifier = Slack::Notifier.new team, token, custom_hook, options
-        end
+        @notifier = Slack::Notifier.new webhook_url, options
       rescue
         @notifier = nil
       end
