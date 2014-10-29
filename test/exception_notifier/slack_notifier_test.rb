@@ -5,35 +5,18 @@ class SlackNotifierTest < ActiveSupport::TestCase
 
   test "should send a slack notification if properly configured" do
     options = {
-      token: "token",
-      team:  "team"
+      webhook_url: "http://slack.webhook.url"
     }
 
     Slack::Notifier.any_instance.expects(:ping).with(fake_notification, {})
 
     slack_notifier = ExceptionNotifier::SlackNotifier.new(options)
     slack_notifier.call(fake_exception)
-  end
-
-  test "should send a notification as the specified hook" do
-    options = {
-      token: "token",
-      team:  "team",
-      custom_hook: "custom"
-    }
-
-    Slack::Notifier.any_instance.expects(:ping).with(fake_notification, {})
-
-    slack_notifier = ExceptionNotifier::SlackNotifier.new(options)
-    slack_notifier.call(fake_exception)
-
-    assert_equal slack_notifier.notifier.hook_name, "custom"
   end
 
   test "should send the notification to the specified channel" do
     options = {
-      token: "token",
-      team:  "team",
+      webhook_url: "http://slack.webhook.url",
       channel: "channel"
     }
 
@@ -47,8 +30,7 @@ class SlackNotifierTest < ActiveSupport::TestCase
 
   test "should send the notification to the specified username" do
     options = {
-      token: "token",
-      team:  "team",
+      webhook_url: "http://slack.webhook.url",
       username: "username"
     }
 
@@ -62,8 +44,7 @@ class SlackNotifierTest < ActiveSupport::TestCase
 
   test "should have the username 'ExceptionNotifierBot' when unspecified" do
     options = {
-      token: "token",
-      team:  "team",
+      webhook_url: "http://slack.webhook.url",
     }
 
     Slack::Notifier.any_instance.expects(:ping).with(fake_notification, {})
@@ -76,8 +57,7 @@ class SlackNotifierTest < ActiveSupport::TestCase
 
   test "should pass the additional parameters to Slack::Notifier.ping" do
     options = {
-      token: "token",
-      team:  "team",
+      webhook_url: "http://slack.webhook.url",
       username: "test",
       custom_hook: "hook",
       additional_parameters: {
@@ -91,21 +71,8 @@ class SlackNotifierTest < ActiveSupport::TestCase
     slack_notifier.call(fake_exception)
   end
 
-  test "shouldn't send a slack notification if token is missing" do
-    options = {
-      team: "test"
-    }
-
-    slack_notifier = ExceptionNotifier::SlackNotifier.new(options)
-
-    assert_nil slack_notifier.notifier
-    assert_nil slack_notifier.call(fake_exception)
-  end
-
-  test "shouldn't send a slack notification if team is missing" do
-    options = {
-      token: "test"
-    }
+  test "shouldn't send a slack notification if webhook url is missing" do
+    options = {}
 
     slack_notifier = ExceptionNotifier::SlackNotifier.new(options)
 
