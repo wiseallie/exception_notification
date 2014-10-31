@@ -603,7 +603,7 @@ Message will appear in this channel. Defaults to the channel you set as such on 
 
 *String, optional*
 
-Username of the bot. Default: 'ExceptionNotifierBot'.
+Username of the bot. Defaults to the name you set as such on slack
 
 ##### custom_hook
 
