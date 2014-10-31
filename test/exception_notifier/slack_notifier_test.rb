@@ -42,19 +42,6 @@ class SlackNotifierTest < ActiveSupport::TestCase
     assert_equal slack_notifier.notifier.username, options[:username]
   end
 
-  test "should have the username 'ExceptionNotifierBot' when unspecified" do
-    options = {
-      webhook_url: "http://slack.webhook.url",
-    }
-
-    Slack::Notifier.any_instance.expects(:ping).with(fake_notification, {})
-
-    slack_notifier = ExceptionNotifier::SlackNotifier.new(options)
-    slack_notifier.call(fake_exception)
-
-    assert_equal slack_notifier.notifier.username, 'ExceptionNotifierBot'
-  end
-
   test "should pass the additional parameters to Slack::Notifier.ping" do
     options = {
       webhook_url: "http://slack.webhook.url",

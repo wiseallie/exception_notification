@@ -6,7 +6,6 @@ module ExceptionNotifier
     def initialize(options)
       begin
         webhook_url = options.fetch(:webhook_url)
-        options[:username] ||= 'ExceptionNotifierBot'
         @message_opts = options.fetch(:additional_parameters, {})
         @notifier = Slack::Notifier.new webhook_url, options
       rescue
