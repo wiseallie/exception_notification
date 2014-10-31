@@ -581,17 +581,11 @@ Whatever::Application.config.middleware.use ExceptionNotification::Rack,
 
 #### Options
 
-##### team
+##### webhook_url
 
 *String, required*
 
-The name of your team on slack.
-
-##### token
-
-*String, required*
-
-The API token to access your slack team's account.
+The Incoming WebHook URL on slack.
 
 ##### channel
 
