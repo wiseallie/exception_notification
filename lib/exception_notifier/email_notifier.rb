@@ -1,3 +1,4 @@
+require "active_support/core_ext/hash/reverse_merge"
 require 'action_mailer'
 require 'action_dispatch'
 require 'pp'
