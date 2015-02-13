@@ -719,6 +719,17 @@ Whatever::Application.config.middleware.use ExceptionNotification::Rack,
 
 You can make use of both the environment and the exception inside the lambda to decide wether to avoid or not sending the notification.
 
+## Rack X-Cascade Header
+
+Some rack apps (Rails in particular) utilize the "X-Cascade" header to pass the request-handling responsibility to the next middleware in the stack.
+
+Rails' routing middleware uses this strategy, rather than raising an exception, to handle routing errors (e.g. 404s); to be notified whenever a 404 occurs, set this option to "false."
+
+### :ignore_cascade_pass
+
+*Boolean, default: true*
+
+Set to false to trigger notifications when another rack middleware sets the "X-Cascade" header to "pass."
 
 ## Background Notifications
 
