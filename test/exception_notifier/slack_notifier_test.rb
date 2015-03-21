@@ -68,6 +68,10 @@ class SlackNotifierTest < ActiveSupport::TestCase
   end
 
   test "should pass along environment data" do
+    exception = fake_exception
+    exception.expects(:backtrace).times(3).returns(["foo line 1", "bar line 20"])
+    exception.expects(:message).twice.returns('exception message')
+
     options = {
       webhook_url: "http://slack.webhook.url"
     }
@@ -77,13 +81,22 @@ class SlackNotifierTest < ActiveSupport::TestCase
         'exception_notifier.exception_data' => {foo: 'bar', john: 'doe'}
       },
       data: {
-        'user_id' => 5
+        'user_id' => 5,
+        'error_backtrace' => ["ignored backtrace"]
       }
     }
 
-    Slack::Notifier.any_instance.expects(:ping).with(fake_notification + ' - foo: bar, john: doe, user_id: 5', {})
+    expected_message =
+      "#{fake_notification(exception)}\n" \
+      "*Data:*\n"                         \
+      "foo: bar, john: doe, user_id: 5\n" \
+      "*Backtrace:*\n"                    \
+      "foo line 1\n"                      \
+      "bar line 20"
+
+    Slack::Notifier.any_instance.expects(:ping).with(expected_message, {})
     slack_notifier = ExceptionNotifier::SlackNotifier.new(options)
-    slack_notifier.call(fake_exception, notification_options)
+    slack_notifier.call(exception, notification_options)
   end
 
   private
@@ -96,7 +109,7 @@ class SlackNotifierTest < ActiveSupport::TestCase
     end
   end
 
-  def fake_notification
-    "An exception occurred: '#{fake_exception.message}' on '#{fake_exception.backtrace.first}'"
+  def fake_notification(exception=fake_exception)
+    "An exception occurred: '#{exception.message}' on '#{exception.backtrace.first}'"
   end
 end
