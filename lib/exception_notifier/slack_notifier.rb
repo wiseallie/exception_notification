@@ -6,6 +6,8 @@ module ExceptionNotifier
 
     def initialize(options)
       begin
+        @ignore_data_if = options[:ignore_data_if]
+
         webhook_url = options.fetch(:webhook_url)
         @message_opts = options.fetch(:additional_parameters, {})
         @notifier = Slack::Notifier.new webhook_url, options
@@ -30,8 +32,20 @@ module ExceptionNotifier
     end
 
     def enrich_message_with_data(message, options)
+      def deep_reject(hash, block)
+        hash.each do |k, v|
+          if v.is_a?(Hash)
+            deep_reject(v, block)
+          end
+
+          if block.call(k, v)
+            hash.delete(k)
+          end
+        end
+      end
+
       data = ((options[:env] || {})['exception_notifier.exception_data'] || {}).merge(options[:data] || {})
-      data.reject!{|k,_| k == 'error_backtrace'}
+      deep_reject(data, @ignore_data_if) if @ignore_data_if.is_a?(Proc)
       text = data.map{|k,v| "#{k}: #{v}"}.join(', ')
 
       if text.present?
