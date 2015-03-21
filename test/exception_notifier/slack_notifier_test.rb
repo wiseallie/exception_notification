@@ -67,6 +67,22 @@ class SlackNotifierTest < ActiveSupport::TestCase
     assert_nil slack_notifier.call(fake_exception)
   end
 
+  test "should pass along environment data" do
+    options = {
+      webhook_url: "http://slack.webhook.url"
+    }
+
+    notification_options = {
+      env: {
+        'exception_notifier.exception_data' => {foo: 'bar', john: 'doe'}
+      }
+    }
+
+    Slack::Notifier.any_instance.expects(:ping).with(fake_notification + ' - foo: bar, john: doe', {})
+    slack_notifier = ExceptionNotifier::SlackNotifier.new(options)
+    slack_notifier.call(fake_exception, notification_options)
+  end
+
   private
 
   def fake_exception
