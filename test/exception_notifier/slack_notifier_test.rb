@@ -75,10 +75,13 @@ class SlackNotifierTest < ActiveSupport::TestCase
     notification_options = {
       env: {
         'exception_notifier.exception_data' => {foo: 'bar', john: 'doe'}
+      },
+      data: {
+        'user_id' => 5
       }
     }
 
-    Slack::Notifier.any_instance.expects(:ping).with(fake_notification + ' - foo: bar, john: doe', {})
+    Slack::Notifier.any_instance.expects(:ping).with(fake_notification + ' - foo: bar, john: doe, user_id: 5', {})
     slack_notifier = ExceptionNotifier::SlackNotifier.new(options)
     slack_notifier.call(fake_exception, notification_options)
   end
