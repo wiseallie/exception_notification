@@ -561,7 +561,7 @@ Just add the [slack-notifier](https://github.com/stevenosloan/slack-notifier) ge
 gem 'slack-notifier'
 ```
 
-To configure it, you need to set at least the 'team' and 'token' options, like this:
+To configure it, you need to set at least the 'webhook_url' option, like this:
 
 ```ruby
 Whatever::Application.config.middleware.use ExceptionNotification::Rack,
@@ -574,10 +574,30 @@ Whatever::Application.config.middleware.use ExceptionNotification::Rack,
     :webhook_url => "[Your webhook url]",
     :channel => "#exceptions",
     :additional_parameters => {
-      :icon_url => "http://image.jpg"
+      :icon_url => "http://image.jpg",
+      :mrkdwn => true
     }
   }
 ```
+
+The slack notification will include any data saved under `env["exception_notifier.exception_data"]`. If you find this too verbose, you can determine to exclude certain information by doing the following:
+
+```ruby
+Whatever::Application.config.middleware.use ExceptionNotification::Rack,
+  :slack => {
+    :webhook_url => "[Your webhook url]",
+    :channel => "#exceptions",
+    :additional_parameters => {
+      :icon_url => "http://image.jpg",
+      :mrkdwn => true
+    },
+    :ignore_data_if => lambda {|key, value|
+      "#{key}" == 'key_to_ignore' || value.is_a?(ClassToBeIgnored)
+    }
+  }
+```
+
+Any evaluation to `true` will cause the key / value pair not be be sent along to Slack.
 
 #### Options
 

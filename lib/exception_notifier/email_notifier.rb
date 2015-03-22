@@ -17,6 +17,8 @@ module ExceptionNotifier
 
       def self.extended(base)
         base.class_eval do
+          base.include BacktraceCleaner
+
           # Append application view path to the ExceptionNotifier lookup context.
           self.append_view_path "#{File.dirname(__FILE__)}/views"
 
@@ -62,14 +64,6 @@ module ExceptionNotifier
           def set_data_variables
             @data.each do |name, value|
               instance_variable_set("@#{name}", value)
-            end
-          end
-
-          def clean_backtrace(exception)
-            if defined?(Rails) && Rails.respond_to?(:backtrace_cleaner)
-              Rails.backtrace_cleaner.send(:filter, exception.backtrace)
-            else
-              exception.backtrace
             end
           end
 
