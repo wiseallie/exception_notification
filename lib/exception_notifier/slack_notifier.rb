@@ -1,6 +1,6 @@
 module ExceptionNotifier
   class SlackNotifier
-    include BacktraceCleaner
+    include ExceptionNotifier::BacktraceCleaner
 
     attr_accessor :notifier
 
