@@ -17,7 +17,7 @@ module ExceptionNotifier
 
       def self.extended(base)
         base.class_eval do
-          include BacktraceCleaner
+          include ExceptionNotifier::BacktraceCleaner
 
           # Append application view path to the ExceptionNotifier lookup context.
           self.append_view_path "#{File.dirname(__FILE__)}/views"
