@@ -14,59 +14,59 @@ class EmailNotifierTest < ActiveSupport::TestCase
   end
 
   test "should have default sender address overridden" do
-    assert @email_notifier.sender_address == %("Dummy Notifier" <dummynotifier@example.com>)
+    assert_equal @email_notifier.sender_address, %("Dummy Notifier" <dummynotifier@example.com>)
   end
 
   test "should have default exception recipients overridden" do
-    assert @email_notifier.exception_recipients == %w(dummyexceptions@example.com)
+    assert_equal @email_notifier.exception_recipients, %w(dummyexceptions@example.com)
   end
 
   test "should have default email prefix overridden" do
-    assert @email_notifier.email_prefix == "[Dummy ERROR] "
+    assert_equal @email_notifier.email_prefix, "[Dummy ERROR] "
   end
 
   test "should have default email headers overridden" do
-    assert @email_notifier.email_headers == { "X-Custom-Header" => "foobar"}
+    assert_equal @email_notifier.email_headers, { "X-Custom-Header" => "foobar"}
   end
 
   test "should have default sections overridden" do
     for section in %w(new_section request session environment backtrace)
-      assert @email_notifier.sections.include? section
+      assert_includes @email_notifier.sections, section
     end
   end
 
   test "should have default background sections" do
     for section in %w(new_bkg_section backtrace data)
-      assert @email_notifier.background_sections.include? section
+      assert_includes @email_notifier.background_sections, section
     end
   end
 
   test "should have email format by default" do
-    assert @email_notifier.email_format == :text
+    assert_equal @email_notifier.email_format, :text
   end
 
   test "should have verbose subject by default" do
-    assert @email_notifier.verbose_subject == true
+    assert @email_notifier.verbose_subject
   end
 
   test "should have normalize_subject false by default" do
-    assert @email_notifier.normalize_subject == false
+    refute @email_notifier.normalize_subject
   end
 
   test "should have delivery_method nil by default" do
-    assert @email_notifier.delivery_method == nil
+    assert_nil @email_notifier.delivery_method
   end
 
   test "should have mailer_settings nil by default" do
-    assert @email_notifier.mailer_settings == nil
+    assert_nil @email_notifier.mailer_settings
   end
 
   test "should have mailer_parent by default" do
-    assert @email_notifier.mailer_parent == 'ActionMailer::Base'
+    assert_equal @email_notifier.mailer_parent, 'ActionMailer::Base'
   end
 
   test "should have template_path by default" do
-    assert @email_notifier.template_path == 'exception_notifier'
+    assert_equal @email_notifier.template_path, 'exception_notifier'
   end
 
   test "should normalize multiple digits into one N" do
@@ -75,23 +75,23 @@ class EmailNotifierTest < ActiveSupport::TestCase
   end
 
   test "mail should be plain text and UTF-8 enconded by default" do
-    assert @mail.content_type == "text/plain; charset=UTF-8"
+    assert_equal @mail.content_type, "text/plain; charset=UTF-8"
   end
 
   test "should have raised an exception" do
-    assert_not_nil @exception
+    refute_nil @exception
   end
 
   test "should have generated a notification email" do
-    assert_not_nil @mail
+    refute_nil @mail
   end
 
   test "mail should have a from address set" do
-    assert @mail.from == ["dummynotifier@example.com"]
+    assert_equal @mail.from, ["dummynotifier@example.com"]
   end
 
   test "mail should have a to address set" do
-    assert @mail.to == ["dummyexceptions@example.com"]
+    assert_equal @mail.to, ["dummyexceptions@example.com"]
   end
 
   test "mail should have a descriptive subject" do
@@ -103,11 +103,11 @@ class EmailNotifierTest < ActiveSupport::TestCase
       # On Rails 4.1 the subject prefix has a single space.
       prefix = '[Dummy ERROR] '
     end
-    assert @mail.subject == prefix + '(ZeroDivisionError) "divided by 0"'
+    assert_equal @mail.subject, prefix + '(ZeroDivisionError) "divided by 0"'
   end
 
   test "mail should say exception was raised in background at show timestamp" do
-    assert @mail.encoded.include? "A ZeroDivisionError occurred in background at #{Time.current}"
+    assert_includes @mail.encoded, "A ZeroDivisionError occurred in background at #{Time.current}"
   end
 
   test "mail should prefix exception class with 'an' instead of 'a' when it starts with a vowel" do
@@ -118,7 +118,7 @@ class EmailNotifierTest < ActiveSupport::TestCase
       @vowel_mail = @email_notifier.create_email(@vowel_exception)
     end
 
-    assert @vowel_mail.encoded.include? "An ActiveRecord::RecordNotFound occurred in background at #{Time.current}"
+    assert_includes @vowel_mail.encoded, "An ActiveRecord::RecordNotFound occurred in background at #{Time.current}"
   end
 
   test "mail should contain backtrace in body" do
@@ -126,14 +126,14 @@ class EmailNotifierTest < ActiveSupport::TestCase
   end
 
   test "mail should contain data in body" do
-    assert @mail.encoded.include? '* data:'
-    assert @mail.encoded.include? ':payload=>"1/0"'
-    assert @mail.encoded.include? ':job=>"DivideWorkerJob"'
-    assert @mail.encoded.include? "My Custom Message"
+    assert_includes @mail.encoded, '* data:'
+    assert_includes @mail.encoded, ':payload=>"1/0"'
+    assert_includes @mail.encoded, ':job=>"DivideWorkerJob"'
+    assert_includes @mail.encoded, "My Custom Message"
   end
 
   test "mail should not contain any attachments" do
-    assert @mail.attachments == []
+    assert_equal @mail.attachments, []
   end
 
   test "should not send notification if one of ignored exceptions" do
@@ -146,7 +146,7 @@ class EmailNotifierTest < ActiveSupport::TestCase
       end
     end
 
-    assert @ignored_exception.class.inspect == "ActiveRecord::RecordNotFound"
+    assert_equal @ignored_exception.class.inspect, "ActiveRecord::RecordNotFound"
     assert_nil @ignored_mail
   end
 end

@@ -11,9 +11,9 @@ class CampfireNotifierTest < ActiveSupport::TestCase
 
     assert !notif[:message].empty?
     assert_equal notif[:message][:type], 'PasteMessage'
-    assert notif[:message][:body].include? "A new exception occurred:"
-    assert notif[:message][:body].include? "divided by 0"
-    assert notif[:message][:body].include? "/exception_notification/test/campfire_test.rb:45"
+    assert_includes notif[:message][:body], "A new exception occurred:"
+    assert_includes notif[:message][:body], "divided by 0"
+    assert_includes notif[:message][:body], "/exception_notification/test/campfire_test.rb:45"
   end
 
   test "should not send campfire notification if badly configured" do
