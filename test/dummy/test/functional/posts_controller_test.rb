@@ -14,59 +14,59 @@ class PostsControllerTest < ActionController::TestCase
   end
 
   test "should have raised an exception" do
-    assert_not_nil @exception
+    refute_nil @exception
   end
 
   test "should have generated a notification email" do
-    assert_not_nil @mail
+    refute_nil @mail
   end
 
   test "mail should be plain text and UTF-8 enconded by default" do
-    assert @mail.content_type == "text/plain; charset=UTF-8"
+    assert_equal @mail.content_type, "text/plain; charset=UTF-8"
   end
 
   test "mail should have a from address set" do
-    assert @mail.from == ["dummynotifier@example.com"]
+    assert_equal @mail.from, ["dummynotifier@example.com"]
   end
 
   test "mail should have a to address set" do
-    assert @mail.to == ["dummyexceptions@example.com"]
+    assert_equal @mail.to, ["dummyexceptions@example.com"]
   end
 
   test "mail subject should have the proper prefix" do
-    assert @mail.subject.include? "[Dummy ERROR]"
+    assert_includes @mail.subject, "[Dummy ERROR]"
   end
 
   test "mail subject should include descriptive error message" do
-    assert @mail.subject.include? "(NoMethodError) \"undefined method `nw'"
+    assert_includes @mail.subject, "(NoMethodError) \"undefined method `nw'"
   end
 
   test "mail should contain backtrace in body" do
-    assert @mail.encoded.include? "`method_missing'\r\n  app/controllers/posts_controller.rb:18:in `create'\r\n"
+    assert_includes @mail.encoded, "`method_missing'\r\n  app/controllers/posts_controller.rb:18:in `create'\r\n"
   end
 
   test "mail should contain timestamp of exception in body" do
-    assert @mail.encoded.include? "Timestamp  : #{Time.current}"
+    assert_includes @mail.encoded, "Timestamp  : #{Time.current}"
   end
 
   test "mail should contain the newly defined section" do
-    assert @mail.encoded.include? "* New text section for testing"
+    assert_includes @mail.encoded, "* New text section for testing"
   end
 
   test "mail should contain the custom message" do
-    assert @mail.encoded.include? "My Custom Message"
+    assert_includes @mail.encoded, "My Custom Message"
   end
 
   test "should filter sensible data" do
-    assert @mail.encoded.include? "secret\"=>\"[FILTERED]"
+    assert_includes @mail.encoded, "secret\"=>\"[FILTERED]"
   end
 
   test "mail should contain the custom header" do
-    assert @mail.encoded.include? 'X-Custom-Header: foobar'
+    assert_includes @mail.encoded, 'X-Custom-Header: foobar'
   end
 
   test "mail should not contain any attachments" do
-    assert @mail.attachments == []
+    assert_equal @mail.attachments, []
   end
 
   test "should not send notification if one of ignored exceptions" do
@@ -79,7 +79,7 @@ class PostsControllerTest < ActionController::TestCase
       end
     end
 
-    assert @ignored_exception.class.inspect == "ActiveRecord::RecordNotFound"
+    assert_equal @ignored_exception.class.inspect, "ActiveRecord::RecordNotFound"
     assert_nil @ignored_mail
   end
 
@@ -93,7 +93,7 @@ class PostsControllerTest < ActionController::TestCase
     end
 
     assert request.ssl?
-    assert @secured_mail.encoded.include? "* session id: [FILTERED]\r\n  *"
+    assert_includes @secured_mail.encoded, "* session id: [FILTERED]\r\n  *"
   end
 
   test "should ignore exception if from unwanted crawler" do
@@ -127,7 +127,7 @@ class PostsControllerTest < ActionController::TestCase
       @mail = @email_notifier.create_email(@exception, {:env => custom_env})
     end
 
-    assert @mail.content_type.include? "multipart/alternative"
+    assert_includes @mail.content_type, "multipart/alternative"
   end
 end
 
@@ -219,6 +219,6 @@ class PostsControllerTestBackgroundNotification < ActionController::TestCase
   end
 
   test "mail should contain the specified section" do
-    assert @mail.encoded.include? "* New background section for testing"
+    assert_includes @mail.encoded, "* New background section for testing"
   end
 end
