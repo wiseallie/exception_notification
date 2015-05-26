@@ -95,7 +95,15 @@ class EmailNotifierTest < ActiveSupport::TestCase
   end
 
   test "mail should have a descriptive subject" do
-    assert @mail.subject == "[Dummy ERROR]  (ZeroDivisionError) \"divided by 0\""
+    # On Rails < 4.1 the subject prefix has two spaces before the rest of the
+    # subject content.
+    if Gem::Version.new(ActionMailer::VERSION::STRING) < Gem::Version.new('4.1')
+      prefix = '[Dummy ERROR]  '
+    else
+      # On Rails 4.1 the subject prefix has a single space.
+      prefix = '[Dummy ERROR] '
+    end
+    assert @mail.subject == prefix + '(ZeroDivisionError) "divided by 0"'
   end
 
   test "mail should say exception was raised in background at show timestamp" do
